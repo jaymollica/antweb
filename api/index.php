@@ -2,7 +2,6 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/header.php');
 
-
 if($_REQUEST) {
 
   $antweb = new antweb($pdo);
@@ -28,10 +27,28 @@ if($_REQUEST) {
 
     print '<pre>'; print_r($specimen); print '</pre>';
   }
+  elseif(isset($_REQUEST['coord'])) {
+    $coord = $_REQUEST['coord'];
+    $parts = explode(',',$coord);
+
+    $lat = $parts[0];
+    $lon = $parts[1];
+
+    $r = 25;
+
+    if(isset($_REQUEST['r'])) {
+      $r = $_REQUEST['r'];
+    }
+
+    print '<pre>'; print_r($parts); print '</pre>';
+
+    $specimens = $antweb->getCoord($lat,$lon,$r);
+
+    print '<pre>'; print_r($specimens); print '</pre>';
+
+
+  }
 
 }
-
-
-
 
 ?>
