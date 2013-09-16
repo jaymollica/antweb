@@ -32,7 +32,7 @@
     <p>http://www.antweb.org/api/?coord=<b>latitude</b>,<b>longitude</b></p>
     <p>The latidude and longitude must be separated by a comma.</p>
     <p>You can also define a specific radius in miles that you'd like to cover:</p>
-    <p>http://www.antweb.org/api/?coord=<b>latitude</b>,<b>longitude&r=<b>radius</b></b></p>
+    <p>http://www.antweb.org/api/?coord=<b>latitude</b>,<b>longitude</b>&r=<b>radius</b></p>
     <p>The radius defaults at 25 miles.</p>
 
 
