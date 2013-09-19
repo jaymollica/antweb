@@ -40,15 +40,15 @@ if($_REQUEST) {
       $r = $_REQUEST['r'];
     }
 
-    print '<pre>'; print_r($parts); print '</pre>';
-
     $specimens = $antweb->getCoord($lat,$lon,$r);
 
     print '<pre>'; print_r($specimens); print '</pre>';
 
-
   }
 
+}
+else {
+  include('readme.html');
 }
 
 ?>

@@ -26,28 +26,14 @@
           $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
 
           $i = 0;
+
           foreach($specimens AS $s) {
 
             $specimen[$i]['meta'] = $s;
 
-            $uidQuery = $this->_db->prepare("SELECT uid FROM image WHERE image_of_id=?");
-            $uidQuery->execute(array($s['code']));
-            if($uidQuery->rowCount() > 0) {
-              $uids = $uidQuery->fetchAll(PDO::FETCH_ASSOC);
-              foreach($uids AS $uid) {
-                if($uid['uid'] < 500000) {
-                  $imgQuery = $this->_db->prepare("SELECT * FROM image_catalog2 WHERE id=?");
-                  
-                }
-                else {
-                  $imgQuery = $this->_db->prepare("SELECT * FROM image_catalog WHERE id=?");
-                }
-                $imgQuery->execute(array($uid['uid']));
-                $imgFields = $imgQuery->fetchAll(PDO::FETCH_ASSOC);
-                $specimen[$i]['images'][] = 'http://www.antweb.org/images/' . $imgFields[0]['dir_name'] . '/' . $imgFields[0]['image_name'];
-              }
-
-            }
+            if($this->getImages($s['code'])) {
+              $specimen[$i]['images'] = $this->getImages($s['code']);
+            } 
 
             $i++;
 
@@ -66,26 +52,9 @@
       if($sql->rowCount() > 0) {
           $specimen['meta'] = $sql->fetchAll(PDO::FETCH_ASSOC);
 
-          $uidQuery = $this->_db->prepare("SELECT uid FROM image WHERE image_of_id=?");
-          $uidQuery->execute(array($code));
-          if($uidQuery->rowCount() > 0) {
-            $uids = $uidQuery->fetchAll(PDO::FETCH_ASSOC);
-            foreach($uids AS $uid) {
-              if($uid['uid'] < 500000) {
-                $imgQuery = $this->_db->prepare("SELECT * FROM image_catalog2 WHERE id=?");
-                
-              }
-              else {
-                $imgQuery = $this->_db->prepare("SELECT * FROM image_catalog WHERE id=?");
-              }
-              $imgQuery->execute(array($uid['uid']));
-              $imgFields = $imgQuery->fetchAll(PDO::FETCH_ASSOC);
-              $specimen['images'][] = 'http://www.antweb.org/images/' . $imgFields[0]['dir_name'] . '/' . $imgFields[0]['image_name'];
-            }
-          }
-          else {
-            $specimen['images'] = 'No images available';
-          }
+        if($this->getImages($code)) {
+          $specimen[$i]['images'] = $this->getImages($code);
+        } 
 
           return $specimen;
         //  return json_encode($specimen);
@@ -103,28 +72,14 @@
         $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
 
         $i = 0;
+
           foreach($specimens AS $s) {
 
             $specimen[$i]['meta'] = $s;
 
-            $uidQuery = $this->_db->prepare("SELECT uid FROM image WHERE image_of_id=?");
-            $uidQuery->execute(array($s['code']));
-            if($uidQuery->rowCount() > 0) {
-              $uids = $uidQuery->fetchAll(PDO::FETCH_ASSOC);
-              foreach($uids AS $uid) {
-                if($uid['uid'] < 500000) {
-                  $imgQuery = $this->_db->prepare("SELECT * FROM image_catalog2 WHERE id=?");
-                  
-                }
-                else {
-                  $imgQuery = $this->_db->prepare("SELECT * FROM image_catalog WHERE id=?");
-                }
-                $imgQuery->execute(array($uid['uid']));
-                $imgFields = $imgQuery->fetchAll(PDO::FETCH_ASSOC);
-                $specimen[$i]['images'][] = 'http://www.antweb.org/images/' . $imgFields[0]['dir_name'] . '/' . $imgFields[0]['image_name'];
-              }
-
-            }
+            if($this->getImages($s['code'])) {
+              $specimen[$i]['images'] = $this->getImages($s['code']);
+            }            
 
             $i++;
 
@@ -133,6 +88,33 @@
         return $specimen;
 
       }
+
+    }
+
+    public function getImages($code) {
+      $imgQuery = $this->_db->prepare("SELECT uid,shot_type,upload_date,shot_number,has_tiff FROM image WHERE image_of_id=?");
+      $imgQuery->execute(array($code));
+      
+      if($imgQuery->rowCount() > 0) {
+        $imgs = $imgQuery->fetchAll(PDO::FETCH_ASSOC);
+        foreach($imgs AS $img) {
+          
+          $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_high.jpg';
+          $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_low.jpg';
+          $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_med.jpg';
+          $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_thumbview.jpg';
+
+          if($img['has_tiff']) {
+            $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '.tif';
+          }
+
+        }
+      }
+      else {
+        $images = NULL;
+      }
+
+      return $images;
 
     }
 
