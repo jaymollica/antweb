@@ -45,10 +45,17 @@ if($_REQUEST) {
     print '<pre>'; print_r($specimens); print '</pre>';
 
   }
+  elseif(isset($_REQUEST['since'])) {
+    $days = $_REQUEST['since'];
+    $specimens = $antweb->getSpecimensCreatedAfter($days);
 
-}
-else {
-  include('readme.html');
+    print '<pre>'; print_r($specimens); print '</pre>';
+
+  }
+  else {
+    include('readme.html');
+  }
+
 }
 
 ?>

@@ -47,16 +47,21 @@
     }
 
     public function getSpecific($code) {
-      $sql = $this->_db->prepare("SELECT * FROM specimen WHERE code=?");
+
+      print '<h1>get specific</h1>';
+      $sql = $this->_db->prepare("SELECT * FROM `specimen` WHERE `code`=?");
       $sql->execute(array($code));
       if($sql->rowCount() > 0) {
+        print '<h1>got specific</h1>';
           $specimen['meta'] = $sql->fetchAll(PDO::FETCH_ASSOC);
 
         if($this->getImages($code)) {
           $specimen[$i]['images'] = $this->getImages($code);
-        } 
+        }
 
-          return $specimen;
+        
+
+        return $specimen;
         //  return json_encode($specimen);
 
       }
@@ -91,22 +96,57 @@
 
     }
 
+    public function getSpecimensCreatedAfter($days) {
+
+      $since = date('Y-m-d', strtotime("-$days days"));
+
+      print '<h1>' . $since . '</h1>';
+
+      $sql = $this->_db->prepare("SELECT * FROM specimen WHERE datedetermined>=?");
+      $sql->execute(array($since));
+
+      print '<h1>' . $sql->rowCount() . '</h1>';
+
+      if($sql->rowCount() > 0) {
+
+        $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+        $i = 0;
+
+          foreach($specimens AS $s) {
+
+            $specimen[$i]['meta'] = $s;
+
+            if($this->getImages($s['code'])) {
+              $specimen[$i]['images'] = $this->getImages($s['code']);
+            }            
+
+            $i++;
+
+          } 
+
+        return $specimen;
+
+      }
+
+    }
+
     public function getImages($code) {
-      $imgQuery = $this->_db->prepare("SELECT uid,shot_type,upload_date,shot_number,has_tiff FROM image WHERE image_of_id=?");
+      $imgQuery = $this->_db->prepare("SELECT uid,shot_type,upload_date,shot_number,has_tiff FROM image WHERE image_of_id=? ORDER BY shot_number ASC");
       $imgQuery->execute(array($code));
       
       if($imgQuery->rowCount() > 0) {
         $imgs = $imgQuery->fetchAll(PDO::FETCH_ASSOC);
         foreach($imgs AS $img) {
-          
-          $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_high.jpg';
-          $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_low.jpg';
-          $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_med.jpg';
-          $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_thumbview.jpg';
 
-          if($img['has_tiff']) {
-            $images[] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '.tif';
-          }
+          $shot_number = $img['shot_number'];
+
+          $images[$shot_number]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_high.jpg';
+          $images[$shot_number]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_low.jpg';
+          $images[$shot_number]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_med.jpg';
+          $images[$shot_number]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_thumbview.jpg';
+
+          $images[$shot_number]['upload_date'] = $img['upload_date'];
 
         }
       }
