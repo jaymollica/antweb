@@ -18,14 +18,19 @@ if($_REQUEST) {
 
     $specimens = $antweb->getSpecimens($rank,$name);
 
-    print '<pre>'; print_r($specimens); print '</pre>';
+    print $specimens;
+
+  //  print '<pre>'; print_r($specimens); print '</pre>';
 
   }
   elseif(isset($_REQUEST['code'])) {
     $code = $_REQUEST['code'];
     $specimen = $antweb->getSpecific($code);
 
-    print '<pre>'; print_r($specimen); print '</pre>';
+      print $specimen;
+
+  //  print '<pre>'; print_r($specimen); print '</pre>';
+      
   }
   elseif(isset($_REQUEST['coord'])) {
     $coord = $_REQUEST['coord'];
@@ -42,7 +47,9 @@ if($_REQUEST) {
 
     $specimens = $antweb->getCoord($lat,$lon,$r);
 
-    print '<pre>'; print_r($specimens); print '</pre>';
+      print $specimens;
+
+  //  print '<pre>'; print_r($specimens); print '</pre>';
 
   }
   elseif(isset($_REQUEST['since'])) {
@@ -63,7 +70,9 @@ if($_REQUEST) {
       $specimens = $antweb->getSpecimensCreatedAfter($days);
     }
 
-    print '<pre>'; print_r($specimens); print '</pre>';
+      print $specimens;
+
+  //  print '<pre>'; print_r($specimens); print '</pre>';
 
   }
   else {

@@ -6,6 +6,8 @@
 
     public function __construct(PDO $db) {
       $this->_db = $db;
+
+
     }
 
     public function getSpecimens($rank,$name) {
@@ -15,9 +17,12 @@
         $sql->execute();
         if($sql->rowCount() > 0) {
           $ranks = $sql->fetchAll(PDO::FETCH_ASSOC);
-
-          return $ranks;
         }
+        else {
+          $ranks = 'No records were found.';
+        }
+
+         return json_encode($ranks);
       }
       else {
         $sql = $this->_db->prepare("SELECT * FROM specimen WHERE $rank=?");
@@ -40,23 +45,22 @@
           } 
 
         }
-
-      }
-      else {
+        else {
         $specimen = 'No records found.';
-      }
+        }
 
-      return $specimen;
+      }
+      
+
+      return json_encode($specimen);
 
     }
 
     public function getSpecific($code) {
 
-      print '<h1>get specific</h1>';
-      $sql = $this->_db->prepare("SELECT * FROM `specimen` WHERE `code`=?");
+      $sql = $this->_db->prepare("SELECT * FROM specimen WHERE code=?");
       $sql->execute(array($code));
       if($sql->rowCount() > 0) {
-        print '<h1>got specific</h1>';
           $specimen['meta'] = $sql->fetchAll(PDO::FETCH_ASSOC);
 
         if($this->getImages($code)) {
@@ -70,7 +74,7 @@
         $specimen = 'No records found.';
       }
 
-      return $specimen;
+      return json_encode($specimen);
 
     }
 
@@ -99,7 +103,7 @@
 
       }
 
-      return $specimen;
+      return json_encode($specimen);
 
     }
 
@@ -133,7 +137,7 @@
         $specimen = 'No records found.';
       }
 
-      return $specimen;
+      return json_encode($specimen);
 
     }
 
@@ -142,11 +146,11 @@
       $since = date('Y-m-d', strtotime("-$days days"));
 
       if($type) {
-        $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=? AND shot_type=?");
+        $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=? AND shot_type=? ORDER BY shot_number ASC");
         $sql->execute(array($since,$type));
       }
       else {
-        $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=?");
+        $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=? ORDER BY shot_number ASC");
         $sql->execute(array($since));
       }
       
@@ -173,7 +177,7 @@
         $images = NULL;
       }
 
-      return $images;
+      return json_encode($images);
 
     }
 
@@ -187,12 +191,12 @@
 
           $shot_number = $img['shot_number'];
 
+          $images[$shot_number]['upload_date'] = $img['upload_date'];
+
           $images[$shot_number]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_high.jpg';
           $images[$shot_number]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_low.jpg';
           $images[$shot_number]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_med.jpg';
           $images[$shot_number]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_thumbview.jpg';
-
-          $images[$shot_number]['upload_date'] = $img['upload_date'];
 
         }
       }
@@ -200,7 +204,7 @@
         $images = NULL;
       }
 
-      return $images;
+      return json_encode($images);
 
     }
 
