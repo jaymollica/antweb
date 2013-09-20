@@ -35,6 +35,24 @@
     <p>http://www.antweb.org/api/?coord=<b>latitude</b>,<b>longitude</b>&r=<b>radius</b></p>
     <p>The radius defaults at 25 miles.</p>
 
+    <h4>4. Get latest specimens or images</h4>
+    <p>You can pull a list of either the latest specimen or images that have been added to the database.</p>
+    <p>To get a list of the latest specimen, query for the number of days in the past you'd like to go.  So if you'd like a list of specimen added in the last week, your query would look like this:</p>
+    <p>http://www.antweb.org/api/?since=7</p>
+    <p>If you would like to get the images added in the last week, just add an argument that qualifies you are looking for images:</p>
+    <p>http://www.antweb.org/api/?since=7&img=true</p>
+    <p>If you would like to find only images of a certain type add an argument for the type of image you are looking for.<p>
+    <p>Here are the four types of images:</p>
+    <ul>
+        <li>H = head</li>
+        <li>D = dorsal</li>
+        <li>S = side shot</li>
+        <li>L = label</li>
+    </ul>
+
+    <p>So your query would look like this if you wanted only head shots:</p>
+    <p>http://www.antweb.org/api/?since=7&img=true&type=h</p>
+
 
   </body>
 

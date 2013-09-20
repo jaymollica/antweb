@@ -46,8 +46,22 @@ if($_REQUEST) {
 
   }
   elseif(isset($_REQUEST['since'])) {
+
     $days = $_REQUEST['since'];
-    $specimens = $antweb->getSpecimensCreatedAfter($days);
+
+    if(isset($_REQUEST['img'])) {
+
+      $type = NULL;
+      if(isset($_REQUEST['type'])) {
+        $type = $_REQUEST['type'];
+      }
+
+      $specimens = $antweb->getImagesAddedAfter($days,$type);
+
+    }
+    else {
+      $specimens = $antweb->getSpecimensCreatedAfter($days);
+    }
 
     print '<pre>'; print_r($specimens); print '</pre>';
 
