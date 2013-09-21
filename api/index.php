@@ -27,7 +27,7 @@ if($_REQUEST) {
     $code = $_REQUEST['code'];
     $specimen = $antweb->getSpecific($code);
 
-      print $specimen;
+    print $specimen;
 
   //  print '<pre>'; print_r($specimen); print '</pre>';
       
@@ -47,9 +47,9 @@ if($_REQUEST) {
 
     $specimens = $antweb->getCoord($lat,$lon,$r);
 
-      print $specimens;
+    print $specimens;
 
-  //  print '<pre>'; print_r($specimens); print '</pre>';
+    // print '<pre>'; print_r($specimens); print '</pre>';
 
   }
   elseif(isset($_REQUEST['since'])) {
@@ -70,7 +70,7 @@ if($_REQUEST) {
       $specimens = $antweb->getSpecimensCreatedAfter($days);
     }
 
-      print $specimens;
+    print $specimens;
 
   //  print '<pre>'; print_r($specimens); print '</pre>';
 
