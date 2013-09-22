@@ -78,7 +78,7 @@
     }
 
     public function getCoord($lat,$lon,$r) {
-      $sql = $this->_db->prepare("SELECT *, ( 3959 * acos( cos( radians($lat) ) * cos( radians( decimal_latitude ) ) * cos( radians( decimal_longitude ) - radians($lon) ) + sin( radians($lat) ) * sin( radians( decimal_latitude ) ) ) ) AS distance FROM specimen HAVING distance < $r ORDER BY distance");
+      $sql = $this->_db->prepare("SELECT *, ( 6371 * acos( cos( radians($lat) ) * cos( radians( decimal_latitude ) ) * cos( radians( decimal_longitude ) - radians($lon) ) + sin( radians($lat) ) * sin( radians( decimal_latitude ) ) ) ) AS distance FROM specimen HAVING distance < $r ORDER BY distance");
 
       $sql->execute();
 
