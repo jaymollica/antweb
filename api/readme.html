@@ -1,57 +1,70 @@
 <html>
   <head>
-    <title>Antweb API</title>
+    <title>Antweb: API</title>
+    <link rel="stylesheet" type="text/css" href="css/readme.css" />
   </head>
   <body>
-    <h2>Welcome to the Antweb API</h2>
+    <div class="container">
+        <h1>AntWeb: API</h1>
 
-    <h3>Functions</h3>
+        <p>This is an attempt to make the antweb data available to the public in an accessible format.</p>
+        <p>There are 4 ways to query specimen: By taxonomy, by specimen code, by decimal coordinates and by days since entry into database.</p>
 
-    <h4>1. Get specimens by taxonomy rank and name.</h4>
+        <h3>1. Get specimens by taxonomy rank and name.</h3>
 
-    <p>You can query the specimen by asking for a particular taxonomic rank and name of that rank.  So if you want all specimens by the genus rank with the name Colobostruma your query would look like this:</p>
+        <p>You can query the specimen by asking for a particular taxonomic rank and name of that rank.  So if you want all specimens by the genus rank with the name Colobostruma your query would look like this:</p>
 
-    <p>http://www.antweb.org/api/?rank=<b>genus</b>&name=<b>colobostruma</b></p>
+        <p class="link"><a href="http://www.antweb.org/api/?rank=genus&name=colobostruma">http://www.antweb.org/api/?rank=genus&name=colobostruma</a></p>
 
-    <p>If you do not specify a particular name of the rank you want, the API will return a list of disticnt names for that rank.  So if you want a list of disctinct subfamilies in the antweb database your query would look like this:</p>
+        <p>If you do not specify a particular name of the rank you want, the API will return a list of disticnt names for that rank.  So if you want a list of disctinct subfamilies in the antweb database your query would look like this:</p>
 
-    <p>http://www.antweb.org/api/?rank=<b>subfamily</b></p>
+        <p class="link"><a href="http://www.antweb.org/api/?rank=subfamily">http://www.antweb.org/api/?rank=subfamily</a></p>
 
-    <p><b>NOTE:</b> Querying for name alone will yield no results.</p>
+        <p><b>NOTE:</b> Querying for name alone will yield no results.</p>
 
-    <h4>2. Get particular specimen using its unique code.</h4>
+        <h3>2. Get particular specimen using its unique code.</h3>
 
-    <p>Each specimen is given a unique id in the antweb database, if you have a specific specimen you would like to look up you can query for it like this:</p>
+        <p>Each specimen is given a unique id in the antweb database, if you have a specific specimen you would like to look up you can query for it like this:</p>
 
-    <p>http://www.antweb.org/api/?code=<b>CODE</b></p>
+        <p class="link">http://www.antweb.org/api/?code=<b>CODE</b></p>
 
-    <p>This will return all of the meta data surrounding the specimen, as well as a list of URLs for any images of the specimen.</p>
+        <p>For example, here is the query for specimen casent0104669.</p>
 
-    <h4>3. Get specimens by decimal coordinates.</h4>
-    <p>You can pull a list of specimens by digital coordinates.  Your query would look like this:</p>
-    <p>http://www.antweb.org/api/?coord=<b>latitude</b>,<b>longitude</b></p>
-    <p>The latidude and longitude must be separated by a comma.</p>
-    <p>You can also define a specific radius in miles that you'd like to cover:</p>
-    <p>http://www.antweb.org/api/?coord=<b>latitude</b>,<b>longitude</b>&r=<b>radius</b></p>
-    <p>The radius defaults at 25 miles.</p>
+        <p class="link"><a href="http://www.antweb.org/api/?code=casent0104669">http://www.antweb.org/api/?code=casent0104669</a></p>
 
-    <h4>4. Get latest specimens or images</h4>
-    <p>You can pull a list of either the latest specimen or images that have been added to the database.</p>
-    <p>To get a list of the latest specimen, query for the number of days in the past you'd like to go.  So if you'd like a list of specimen added in the last week, your query would look like this:</p>
-    <p>http://www.antweb.org/api/?since=7</p>
-    <p>If you would like to get the images added in the last week, just add an argument that qualifies you are looking for images:</p>
-    <p>http://www.antweb.org/api/?since=7&img=true</p>
-    <p>If you would like to find only images of a certain type add an argument for the type of image you are looking for.<p>
-    <p>Here are the four types of images:</p>
-    <ul>
-        <li>H = head</li>
-        <li>D = dorsal</li>
-        <li>P = side shot</li>
-        <li>L = label</li>
-    </ul>
+        <p>This will return all of the meta data surrounding the specimen, as well as a list of URLs for any images of the specimen.</p>
 
-    <p>So your query would look like this if you wanted only head shots:</p>
-    <p>http://www.antweb.org/api/?since=7&img=true&type=h</p>
+        <h3>3. Get specimens by decimal coordinates.</h3>
+        <p>You can pull a list of specimens by decimal coordinates.  Your query would look like this:</p>
+        <p class="link">http://www.antweb.org/api/?coord=<b>latitude</b>,<b>longitude</b></p>
+        <p>The latidude and longitude <em>must</em> be separated by a comma.</p>
+        <p>You can also define a specific radius in kilometers that you'd like to cover:</p>
+        <p class="link">http://www.antweb.org/api/?coord=<b>latitude</b>,<b>longitude</b>&r=<b>radius</b></p>
+        <p>The radius defaults at 25 km.</p>
+
+        <p>Here is the query for all specimen collected within a 2 km radius of the California Academy of Sciences.</p>
+
+        <p class="link"><a href="http://www.antweb.org/api/?coord=37.76,-122.45&r=2">http://www.antweb.org/api/?coord=37.76,-122.45&r=2</a>
+
+        <h3>4. Get latest specimens or images</h3>
+        <p>You can pull a list of either the latest specimen or images that have been added to the database.</p>
+        <p>To get a list of the latest specimen, query for the number of days in the past you'd like to go.  So if you'd like a list of specimen added in the last week, your query would look like this:</p>
+        <p class="link"><a href="http://www.antweb.org/api/?since=7">http://www.antweb.org/api/?since=7</a></p>
+        <p>If you would like to get the images added in the last week, just add an argument that qualifies you are looking for images:</p>
+        <p class="link"><a href="http://www.antweb.org/api/?since=7&img=true">http://www.antweb.org/api/?since=7&img=true</a></p>
+        <p>If you would like to find only images of a certain type add an argument for the type of image you are looking for.<p>
+        <p>Here are the four types of images:</p>
+        <ul>
+            <li>H = head</li>
+            <li>D = dorsal</li>
+            <li>P = profile</li>
+            <li>L = label</li>
+        </ul>
+
+        <p>So your query would look like this if you wanted only head shots:</p>
+        <p class="link"><a href="http://www.antweb.org/api/?since=7&img=true&type=h">http://www.antweb.org/api/?since=7&img=true&type=h</a></p>
+
+    </div>
 
 
   </body>
