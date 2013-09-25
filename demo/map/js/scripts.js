@@ -2,6 +2,7 @@
 (function(win, $) {
 
     var Coord = Namespace('AntWeb.Controller.Api.Coord');
+    var Travel = Namespace('AntWeb.Controller.Api.Coord.Travel');
     var Specimen = Namespace('AntWeb.Model.Specimen');
     var Map = Namespace('AntWeb.View.Map');
 
@@ -24,9 +25,9 @@
       console.log('Main : Update Specimens');
 
       var latlng = Map.getCenter();
-      var radius = Math.min(Math.max(Map.getRadius(), 1), 50);
+      var radius = Map.getRadius();
 
-      Coord.getSpecimens(latlng, radius, function(response) {
+      Travel.getSpecimens(latlng, radius, function(response) {
 
         _mapSpecimens(response);
 

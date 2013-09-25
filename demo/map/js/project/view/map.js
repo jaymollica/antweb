@@ -8,6 +8,7 @@
     UPDATE: 'map:update'
   };
   var _cloudmadeLayer = undefined;
+  var _debugGroup = undefined;
   var _markersGroup = undefined;
 
   var _addEvents = function() {
@@ -38,6 +39,8 @@
         attribution: 'antweb'
       });
 
+    _debugGroup = L.layerGroup();
+
     _markersGroup = new L.MarkerClusterGroup({
       singleMarkerMode: true
     });
@@ -47,7 +50,7 @@
       zoom: 6,
       minZoom: 6,
       maxZoom: 18,
-      layers: [_cloudmadeLayer, _markersGroup]
+      layers: [_cloudmadeLayer, _debugGroup, _markersGroup]
     })
       .locate({
         setView: true,
@@ -76,10 +79,6 @@
       });
   };
 
-  var KM_TO_M = function(km) {
-    return km * 0.6214
-  };
-
   // Public
 
   var _init = function(success, failure) {
@@ -95,15 +94,13 @@
     return _map.getCenter();
   };
 
-  var _getRadius = function(inMiles) {
+  var _getRadius = function() {
 
     var mapBoundNorthEast = _map.getBounds()
       .getNorthEast();
-    var mapDistance = mapBoundNorthEast.distanceTo(_map.getCenter());
+    var radius = mapBoundNorthEast.distanceTo(_map.getCenter());
 
-    var radiusInKm = mapDistance / 1000;
-
-    return inMiles ? KM_TO_M(radiusInKm) : radiusInKm;
+    return radius;
   };
 
   var _getMarker = function(model) {
@@ -117,13 +114,18 @@
     _markersGroup.addLayers(array);
   };
 
+  var _addDebugger = function(layer) {
+    _debugGroup.addLayer(layer);
+  };
+
   Namespace('AntWeb.View.Map', {
     init: _init,
     events: _events,
     getCenter: _getCenter,
     getRadius: _getRadius,
     getMarker: _getMarker,
-    addMarkers: _addMarkers
+    addMarkers: _addMarkers,
+    addDebugger: _addDebugger
   });
 
   return {};
