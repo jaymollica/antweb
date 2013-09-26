@@ -12,18 +12,20 @@ body {
 
 }
 
-a, .link {
+a {
+  text-decoration:none;
+  color:white;
+}
+
+.link, .link a {
+  text-decoration:none;
   color:white;
   opacity:1;
   background-color:#443D33;
   padding:3px;
 }
 
-.link a {
-  text-decoration:none;
-}
-
-.link a:hover {
+a:hover {
   text-decoration:none;
   color:lightgray;
 }
