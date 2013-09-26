@@ -35,6 +35,13 @@
        *
        */
       Map.addDebugger(L.circle(center, radius * 1000));
+
+      // var t = setTimeout(function() {
+      //   t = clearTimeout();
+      //   failure();
+      // }, 1000);
+
+      // return;
       /** 
        *
        * End Debug
