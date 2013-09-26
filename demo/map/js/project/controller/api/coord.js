@@ -4,7 +4,7 @@
     var Map = Namespace('AntWeb.View.Map');
     var Api = Namespace('AntWeb.Controller.Api');
 
-    var _isUsingMiles = false;
+    var _cache = new Cache(50000);
 
     var _normalizeRadius = function(radius) {
 
@@ -29,39 +29,43 @@
 
       radius = _normalizeRadius(radius);
 
-      /** 
-       *
-       * Begin Debug
-       *
-       */
-      Map.addDebugger(L.circle(center, radius * 1000));
+      var path = '/api/?coord=' + coord + '&r=' + radius;
 
-      // var t = setTimeout(function() {
-      //   t = clearTimeout();
-      //   failure();
-      // }, 1000);
+      if (_cache.getItem(path) === true) {
 
-      // return;
-      /** 
-       *
-       * End Debug
-       *
-       */
+        console.log('Api : Coord : Found Specimens Prevoiusly');
 
-      Api.getData('/api/?coord=' + coord + '&r=' + radius, function(response) {
+        failure();
 
-        var length = response ? response.length : 0;
+      } else {
 
-        console.log('Api : Coord : Found (' + length + ') Specimens');
-        console.log(response);
+        Api.getData(path, function(response) {
 
-        if (response !== null && response.length > 0) {
-          success(response);
-        } else {
-          failure();
-        }
+          // Begin Debug
+          Map.addDebugger(L.circle(center, radius * 1000, {
+            stroke: false
+          }));
+          // End Debug
 
-      });
+          _cache.setItem(path, true);
+
+          var length = response ? response.length : 0;
+
+          console.log('Api : Coord : Found (' + length + ') Specimens');
+          console.log(response);
+
+          if (response !== null && response.length > 0) {
+
+            success(response);
+
+          } else {
+
+            failure();
+
+          }
+
+        });
+      }
 
     };
 

@@ -83,37 +83,34 @@
 
       var addSides = function() {
 
-        queue.push(_getLatLng(radius, xOffset, 0));
-        queue.push(_getLatLng(radius, -xOffset, 0));
-        queue.push(_getLatLng(radius, 0, yOffset));
-        queue.push(_getLatLng(radius, 0, -yOffset));
+        queue.push(_getLatLng(radius, xOffset, 0)); // Right
+        queue.push(_getLatLng(radius, -xOffset, 0)); // Left
+        queue.push(_getLatLng(radius, 0, yOffset)); // Top
+        queue.push(_getLatLng(radius, 0, -yOffset)); // Bottom
 
         if (_level > 1) {
 
-          var xOffsetNew = 0;
-          var yOffsetNew = 0;
           var i = 1;
           var l = _level;
-          var t = 0.5; // Magic Number
-          var t2 = undefined; // Very Magic Number
+          var xOffsetInterval = xOffset / _level;
+          var yOffsetInterval = yOffset / _level;
+          var xOffsetNew = undefined;
+          var yOffsetNew = undefined;
 
           for (i; i < l; i++) {
 
-            t2 = t / (i * 1.05);
+            xOffsetNew = xOffsetInterval * i;
+            yOffsetNew = yOffsetInterval * i;
 
-            yOffsetNew = yOffset * (i * t2);
+            queue.push(_getLatLng(radius, xOffset, yOffsetNew)); // Right
+            queue.push(_getLatLng(radius, xOffset, -yOffsetNew)); // Right
+            queue.push(_getLatLng(radius, -xOffset, yOffsetNew)); // Left
+            queue.push(_getLatLng(radius, -xOffset, -yOffsetNew)); // Left
+            queue.push(_getLatLng(radius, xOffsetNew, yOffset)); // Top
+            queue.push(_getLatLng(radius, -xOffsetNew, yOffset)); // Top
+            queue.push(_getLatLng(radius, xOffsetNew, -yOffset)); // Bottom
+            queue.push(_getLatLng(radius, -xOffsetNew, -yOffset)); // Bottom
 
-            queue.push(_getLatLng(radius, xOffset, yOffsetNew));
-            queue.push(_getLatLng(radius, xOffset, -yOffsetNew));
-            queue.push(_getLatLng(radius, -xOffset, yOffsetNew));
-            queue.push(_getLatLng(radius, -xOffset, -yOffsetNew));
-
-            xOffsetNew = xOffset * (i * t2);
-
-            queue.push(_getLatLng(radius, xOffsetNew, yOffset));
-            queue.push(_getLatLng(radius, -xOffsetNew, yOffset));
-            queue.push(_getLatLng(radius, xOffsetNew, -yOffset));
-            queue.push(_getLatLng(radius, -xOffsetNew, -yOffset));
           }
         }
       };
