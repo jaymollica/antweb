@@ -1,16 +1,16 @@
 ;
 (function(win, $) {
 
-    var _cachedDataRequests = new Cache(50);
-    var _openDataRequest = undefined;
+    var _cache = new Cache(50);
+    var _openRequest = undefined;
 
     var _abortOpenRequest = function() {
-      if (_openDataRequest !== undefined && _openDataRequest.readyState !== 4) {
+      if (_openRequest !== undefined && _openRequest.readyState !== 4) {
 
-        console.log('Api : Active Data Request Canceled');
+        console.log('Api : Active Data Request Cancelled');
 
-        _openDataRequest.abort();
-        _openDataRequest = undefined;
+        _openRequest.abort();
+        _openRequest = undefined;
       }
     };
 
@@ -20,7 +20,7 @@
 
       _abortOpenRequest();
 
-      var cachedResponse = _cachedDataRequests.getItem(path);
+      var cachedResponse = _cache.getItem(path);
 
       if (cachedResponse) {
 
@@ -32,7 +32,7 @@
 
         console.log('Api : Data Response Not Cached');
 
-        _openDataRequest =
+        _openRequest =
           $.getJSON(path)
           .done(function(response) {
 
@@ -40,7 +40,7 @@
 
             _abortOpenRequest();
 
-            _cachedDataRequests.setItem(path, response);
+            _cache.setItem(path, response);
 
             success(response);
 
@@ -58,8 +58,16 @@
       }
     };
 
+    _hasResponse = function(key) {
+
+      console.log('Api : Has Response');
+
+      return (_cache.getItem(key) !== null);
+    };
+
     Namespace('AntWeb.Controller.Api', {
-      getData: _getData
+      getData: _getData,
+      hasResponse: _hasResponse
     });
 
     return {

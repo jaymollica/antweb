@@ -24,10 +24,10 @@
 
       console.log('Main : Update Specimens');
 
-      var latlng = Map.getCenter();
+      var center = Map.getCenter();
       var radius = Map.getRadius();
 
-      Travel.getSpecimens(latlng, radius, function(response) {
+      Travel.getSpecimens(center, radius, function(response) {
 
         _mapSpecimens(response);
 

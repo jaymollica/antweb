@@ -10,20 +10,18 @@
 
       var radiusInKm = radius / 1000;
 
-      radius = _isUsingMiles ? KM_TO_M(radiusInKm) : radiusInKm
-
-      if (radius > 50) {
-        radius = 50;
+      if (radiusInKm > 50) {
+        radiusInKm = 50;
       }
 
-      if (radius < 1) {
-        radius = 1;
+      if (radiusInKm < 1) {
+        radiusInKm = 1;
       }
 
-      return parseInt(radius);
+      return parseInt(radiusInKm);
     };
 
-    var _getSpecimens = function(center, radius, success) {
+    var _getSpecimens = function(center, radius, success, failure) {
 
       console.log('Api : Coord : Get Specimens');
 
@@ -45,24 +43,24 @@
 
       Api.getData('/api/?coord=' + coord + '&r=' + radius, function(response) {
 
-        if (response) {
-          console.log('Api : Coord : Found (' + response.length + ') Specimens');
-          console.log(response);
+        var length = response ? response.length : 0;
+
+        console.log('Api : Coord : Found (' + length + ') Specimens');
+        console.log(response);
+
+        if (response !== null && response.length > 0) {
           success(response);
         } else {
-          console.log('Api : Coord : Found (0) Specimens');
+          failure();
         }
 
       });
 
     };
 
-    var KM_TO_M = function(km) {
-      return km * 0.6214
-    };
-
     Namespace('AntWeb.Controller.Api.Coord', {
-      getSpecimens: _getSpecimens
+      getSpecimens: _getSpecimens,
+      normalizeRadius: _normalizeRadius
     });
 
     return {
