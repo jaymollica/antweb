@@ -39,7 +39,7 @@ if($_REQUEST) {
     $lat = $parts[0];
     $lon = $parts[1];
 
-    $r = 25;
+    $r = 5;
 
     if(isset($_REQUEST['r'])) {
       $r = $_REQUEST['r'];
@@ -79,6 +79,9 @@ if($_REQUEST) {
     include('readme.html');
   }
 
+}
+else {
+  include('readme.html');
 }
 
 ?>
