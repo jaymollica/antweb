@@ -6,8 +6,6 @@
 
     public function __construct(PDO $db) {
       $this->_db = $db;
-
-
     }
 
     public function getSpecimens($rank,$name) {
