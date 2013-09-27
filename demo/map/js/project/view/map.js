@@ -115,7 +115,7 @@
   };
 
   var _addDebugger = function(layer) {
-    _debugGroup.addLayer(layer);
+    // _debugGroup.addLayer(layer);
   };
 
   Namespace('AntWeb.View.Map', {
