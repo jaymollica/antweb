@@ -1,0 +1,16 @@
+id: "antweb-demo-map"
+name: "AntWeb | Demo | Map"
+title: "AntWeb | Demo | Map"
+description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
+keywords: "Lorem, Ipsum, Dolor, Sit, Amet"
+url: 
+  localhost: "http://antweb-demo-map-localhost.com"
+  development: "http://antweb-demo-map.com"
+  review: "http://antweb-demo-map.com"
+  staging: "http://antweb-demo-map.com"
+  production: "http://antweb-demo-map.com"
+social: 
+  image: "/cache/share_fb.jpg"
+  title: "AntWeb Map Demo"
+  description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
+  twitter_id: "@antweb-demo-map"
