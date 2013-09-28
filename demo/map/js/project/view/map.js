@@ -1,6 +1,8 @@
 ;
 (function(win, $) {
 
+  var Debug = Namespace('AntWeb.Debug');
+
   var $_win = $(win);
   var $_map = $('#map');
   var _map = undefined;
@@ -115,7 +117,12 @@
   };
 
   var _addDebugger = function(layer) {
-    // _debugGroup.addLayer(layer);
+
+    if (Debug.map === true) {
+
+      _debugGroup.addLayer(layer);
+
+    }
   };
 
   Namespace('AntWeb.View.Map', {
