@@ -29,6 +29,10 @@
     });
   };
 
+  var _triggerUpdate = function() {
+    $_win.trigger(_events.UPDATE);
+  };
+
   var _createMap = function() {
 
     console.log('Map : Create');
@@ -51,7 +55,7 @@
       zoomControl: false,
       zoomsliderControl: false,
       panControl: false,
-      center: L.latLng(0, 0),
+      center: L.latLng(37.65582950293978, -122.41550445556639),
       zoom: 6,
       minZoom: 6,
       maxZoom: 18,
@@ -72,14 +76,15 @@
 
         console.log('Map : Event : Location Error', evt);
 
+        _showMap();
+        _triggerUpdate();
+
       })
       .on('moveend', function(evt) {
 
         console.log('Map : Event : Move End', evt);
 
-        // _updateSpecimens();
-
-        $_win.trigger(_events.UPDATE);
+        _triggerUpdate();
 
       });
 
