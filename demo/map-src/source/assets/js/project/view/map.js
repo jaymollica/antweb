@@ -29,10 +29,6 @@
     });
   };
 
-  var _triggerUpdate = function() {
-    $_win.trigger(_events.UPDATE);
-  };
-
   var _createMap = function() {
 
     console.log('Map : Create');
@@ -52,10 +48,7 @@
     });
 
     _map = L.map('map', {
-      zoomControl: false,
-      zoomsliderControl: false,
-      panControl: false,
-      center: L.latLng(37.65582950293978, -122.41550445556639),
+      center: L.latLng(0, 0),
       zoom: 6,
       minZoom: 6,
       maxZoom: 18,
@@ -76,42 +69,16 @@
 
         console.log('Map : Event : Location Error', evt);
 
-        _showMap();
-        _triggerUpdate();
-
       })
       .on('moveend', function(evt) {
 
         console.log('Map : Event : Move End', evt);
 
-        _triggerUpdate();
+        // _updateSpecimens();
+
+        $_win.trigger(_events.UPDATE);
 
       });
-
-    L.control.locate({
-      follow: true,
-      stopFollowingOnDrag: true
-    })
-      .addTo(_map);
-
-    _map.addControl(new L.Control.Zoomslider());
-
-    L.control.pan()
-      .addTo(_map);
-
-    // L.control.coordinates({
-    //   position: "bottomleft",
-    //   decimals: 2,
-    //   decimalSeperator: ",",
-    //   labelTemplateLat: "Latitude: {y}",
-    //   labelTemplateLng: "Longitude: {x}"
-    // })
-    //   .addTo(_map);
-
-    // new L.Control.MiniMap(_cloudmadeLayer, {
-    //   toggleDisplay: true
-    // })
-    //   .addTo(_map);
   };
 
   // Public
