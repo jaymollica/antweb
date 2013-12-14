@@ -84,7 +84,7 @@
           $specimen['meta'] = $sql->fetchAll(PDO::FETCH_ASSOC);
 
         if($this->getImages($code)) {
-          $specimen[$i]['images'] = $this->getImages($code);
+          $specimen['images'] = $this->getImages($code);
         }
         
         //  return json_encode($specimen);
