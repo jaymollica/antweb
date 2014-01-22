@@ -20,7 +20,32 @@ if($_REQUEST) {
 
     print $specimens;
 
-  //  print '<pre>'; print_r($specimens); print '</pre>';
+  }
+  elseif(isset($_REQUEST['species']) && isset($_REQUEST['genus'])) {
+    $species = $_REQUEST['species'];
+    $genus = $_REQUEST['genus'];
+
+    $specimens = $antweb->getSpecies($genus,$species);
+
+    print $specimens;
+
+  }
+  elseif(isset($_REQUEST['species']) && !isset($_REQUEST['genus'])) {
+    $rank = 'species';
+    $name = $_REQUEST['species'];
+
+    $specimens = $antweb->getSpecimens($rank,$name);
+
+    print $specimens;
+
+  }
+  elseif(!isset($_REQUEST['species']) && isset($_REQUEST['genus'])) {
+    $rank = 'genus';
+    $name = $_REQUEST['genus'];
+
+    $specimens = $antweb->getSpecimens($rank,$name);
+
+    print $specimens;
 
   }
   elseif(isset($_REQUEST['code'])) {
@@ -29,8 +54,6 @@ if($_REQUEST) {
 
     print $specimen;
 
-  //  print '<pre>'; print_r($specimen); print '</pre>';
-      
   }
   elseif(isset($_REQUEST['coord'])) {
     $coord = $_REQUEST['coord'];
@@ -48,8 +71,6 @@ if($_REQUEST) {
     $specimens = $antweb->getCoord($lat,$lon,$r);
 
     print $specimens;
-
-    // print '<pre>'; print_r($specimens); print '</pre>';
 
   }
   elseif(isset($_REQUEST['since'])) {
@@ -71,8 +92,6 @@ if($_REQUEST) {
     }
 
     print $specimens;
-
-  //  print '<pre>'; print_r($specimens); print '</pre>';
 
   }
   else {

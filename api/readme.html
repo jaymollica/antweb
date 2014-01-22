@@ -16,15 +16,24 @@
 
         <h3>1. Get specimens by taxonomy rank and name.</h3>
 
-        <p>You can query the specimen by asking for a particular taxonomic rank and name of that rank.  So if you want all specimens of the genus <em>Colobostruma</em> your query would look like this:</p>
+        <p>A. You can query the specimen by asking for a particular taxonomic rank and name of that rank.  So if you want all specimens of the genus <em>Colobostruma</em> your query would look like this:</p>
 
         <p class="link"><a href="http://www.antweb.org/api/?rank=genus&name=colobostruma">http://www.antweb.org/api/?rank=genus&name=colobostruma</a></p>
 
-        <p>If you do not specify a particular name of the rank you want, the API will return a list of distinct names for that rank.  You can query for distinct subfamlies, genus or species.  So if you want a list of disctinct subfamilies in the antweb database your query would look like this:</p>
+        <p>B. If you do not specify a particular name of the rank you want, the API will return a list of distinct names for that rank.  You can query for distinct subfamlies, genus or species.  So if you want a list of disctinct subfamilies in the antweb database your query would look like this:</p>
 
         <p class="link"><a href="http://www.antweb.org/api/?rank=subfamily">http://www.antweb.org/api/?rank=subfamily</a></p>
 
         <p><b>NOTE:</b> Querying for name alone will yield no results.</p>
+
+        <p>C. If you would like to find all specimen of a particular species belonging to a particular genus you can enter a query like this:</p>
+
+        <p class="link"><a href="http://www.antweb.org/api/?genus=acanthognathus&species=brevicornis">http://www.antweb.org/api/?genus=acanthognathus&species=brevicornis</a></p>
+
+        <p>If you only enter a genus or a species then the query will behave the same as using the rank and name method:</p>
+        <p class="link"><a href="http://www.antweb.org/api/?genus=acanthognathus">http://www.antweb.org/api/?genus=acanthognathus</a></p>
+        <p>Is the same as:</p>
+        <p class="link"><a href="http://www.antweb.org/api/?rank=genus&name=acanthognathus">http://www.antweb.org/api/?rank=genus&name=acanthognathus</a></p>
 
         <h3>2. Get particular specimen using its unique code.</h3>
 

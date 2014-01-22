@@ -24,15 +24,35 @@
 
     }
 
+    public function getSpecies($genus,$species) {
+
+      if(!ctype_alnum($genus) || !ctype_alnum($species)) {
+        exit;
+      }
+
+      $sql = $this->_db->prepare("SELECT * FROM specimen WHERE genus=? AND species=?");
+      $sql->execute(array($genus,$species));
+
+      if($sql->rowCount() > 0) {
+        $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else {
+        $specimens = 'No records were found.';
+        //http_response_code(204);
+      }
+
+      return json_encode($specimens);
+
+    }
+
     public function getSpecimens($rank,$name) {
 
       $fields = $this->getColumnNames('specimen');
 
-      if (!in_array($rank, $fields))
-      {
+      if (!in_array($rank, $fields)) {
       exit;
       }
-      
+
       if(!$name) {
         $sql = $this->_db->prepare("SELECT distinct($rank) FROM specimen ORDER BY $rank ASC");
         $sql->execute();
@@ -59,11 +79,11 @@
 
             if($this->getImages($s['code'])) {
               $specimen[$i]['images'] = $this->getImages($s['code']);
-            } 
+            }
 
             $i++;
 
-          } 
+          }
 
         }
         else {
@@ -71,7 +91,7 @@
         }
 
       }
-      
+
       return json_encode($specimen);
 
     }
@@ -86,7 +106,7 @@
         if($this->getImages($code)) {
           $specimen['images'] = $this->getImages($code);
         }
-        
+
         //  return json_encode($specimen);
 
       }
@@ -120,11 +140,11 @@
 
             if($this->getImages($s['code'])) {
               $specimen[$i]['images'] = $this->getImages($s['code']);
-            }            
+            }
 
             $i++;
 
-          }  
+          }
 
       }
 
@@ -151,11 +171,11 @@
 
             if($this->getImages($s['code'])) {
               $specimen[$i]['images'] = $this->getImages($s['code']);
-            }            
+            }
 
             $i++;
 
-          } 
+          }
 
       }
       else {
@@ -178,7 +198,7 @@
         $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=? ORDER BY shot_number ASC");
         $sql->execute(array($since));
       }
-      
+
       if($sql->rowCount() > 0) {
         $imgs = $sql->fetchAll(PDO::FETCH_ASSOC);
 
@@ -197,7 +217,7 @@
           $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_thumbview.jpg';
 
         }
-        
+
       }
       else {
         $images = NULL;
@@ -210,7 +230,7 @@
     public function getImages($code) {
       $imgQuery = $this->_db->prepare("SELECT uid,shot_type,upload_date,shot_number,has_tiff FROM image WHERE image_of_id=? ORDER BY shot_number ASC");
       $imgQuery->execute(array($code));
-      
+
       if($imgQuery->rowCount() > 0) {
         $imgs = $imgQuery->fetchAll(PDO::FETCH_ASSOC);
         foreach($imgs AS $img) {
