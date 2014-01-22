@@ -8,8 +8,31 @@
       $this->_db = $db;
     }
 
+    public function getColumnNames($table) {
+
+      $sql = $this->_db->prepare("DESCRIBE " . $table);
+      $sql->execute();
+      if($sql->rowCount() > 0) {
+        $columns = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $fields = array();
+        foreach($columns AS $c) {
+          $fields[] = $c['Field'];
+        }
+      }
+
+      return $fields;
+
+    }
+
     public function getSpecimens($rank,$name) {
 
+      $fields = $this->getColumnNames('specimen');
+
+      if (!in_array($rank, $fields))
+      {
+      exit;
+      }
+      
       if(!$name) {
         $sql = $this->_db->prepare("SELECT distinct($rank) FROM specimen ORDER BY $rank ASC");
         $sql->execute();
@@ -76,9 +99,14 @@
     }
 
     public function getCoord($lat,$lon,$r) {
-      $sql = $this->_db->prepare("SELECT *, ( 6371 * acos( cos( radians($lat) ) * cos( radians( decimal_latitude ) ) * cos( radians( decimal_longitude ) - radians($lon) ) + sin( radians($lat) ) * sin( radians( decimal_latitude ) ) ) ) AS distance FROM specimen HAVING distance < $r ORDER BY distance");
 
-      $sql->execute();
+      if( (!is_numeric($r)) || (!is_numeric($lat)) || (!is_numeric($lon)) ) {
+        exit;
+      }
+
+      $sql = $this->_db->prepare("SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( decimal_latitude ) ) * cos( radians( decimal_longitude ) - radians(:lon) ) + sin( radians(:lat) ) * sin( radians( decimal_latitude ) ) ) ) AS distance FROM specimen HAVING distance < $r ORDER BY distance");
+
+      $sql->execute(array(':lat' => $lat, ':lon' => $lon));
 
       if($sql->rowCount() > 0) {
 
