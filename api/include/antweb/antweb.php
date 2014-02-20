@@ -24,6 +24,19 @@
 
     }
 
+    //some of the characters coming out of the db are not utf8 encoded and throwing warnings in the log
+    public function utf8Scrub($array) {
+
+      array_walk_recursive(
+              $array, function (&$value) {
+                  $value = htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+              }
+      );
+
+      return $array;
+
+    }
+
     public function getSpecies($genus,$species) {
 
       if(!ctype_alnum($genus) || !ctype_alnum($species)) {
@@ -41,6 +54,7 @@
         //http_response_code(204);
       }
 
+      $specimens = $this->utf8Scrub($specimens);
       return json_encode($specimens);
 
     }
@@ -63,7 +77,8 @@
           $ranks = 'No records were found.';
         }
 
-         return json_encode($ranks);
+        $ranks = $this->utf8Scrub($ranks);
+        return json_encode($ranks);
       }
       else {
         $sql = $this->_db->prepare("SELECT * FROM specimen WHERE $rank=?");
@@ -92,6 +107,7 @@
 
       }
 
+      $specimen = $this->utf8Scrub($specimen);      
       return json_encode($specimen);
 
     }
@@ -114,6 +130,7 @@
         $specimen = 'No records found.';
       }
 
+      $specimen = $this->utf8Scrub($specimen);
       return json_encode($specimen);
 
     }
@@ -148,6 +165,7 @@
 
       }
 
+      $specimen = $this->utf8Scrub($specimen);
       return json_encode($specimen);
 
     }
@@ -182,6 +200,7 @@
         $specimen = 'No records found.';
       }
 
+      $specimen = $this->utf8Scrub($specimen);
       return json_encode($specimen);
 
     }
@@ -223,6 +242,7 @@
         $images = NULL;
       }
 
+      $images = $this->utf8Scrub($images);
       return json_encode($images);
 
     }
