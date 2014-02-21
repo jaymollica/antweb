@@ -1,5 +1,6 @@
 <?php
 
+header('Content-type: application/json');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/header.php');
 
 if($_REQUEST) {
@@ -95,11 +96,13 @@ if($_REQUEST) {
 
   }
   else {
+    header('Content-type: text/html');
     include('readme.html');
   }
 
 }
 else {
+  header('Content-type: text/html');
   include('readme.html');
 }
 
