@@ -50,7 +50,7 @@
         $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
       }
       else {
-        $specimens = 'No records were found.';
+        $specimens = 'No records found.';
         //http_response_code(204);
       }
 
@@ -74,7 +74,7 @@
           $ranks = $sql->fetchAll(PDO::FETCH_ASSOC);
         }
         else {
-          $ranks = 'No records were found.';
+          $ranks = 'No records found.';
         }
 
         $ranks = $this->utf8Scrub($ranks);
