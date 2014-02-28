@@ -6,6 +6,21 @@
 
     public function __construct(PDO $db) {
       $this->_db = $db;
+
+      // a list of valid arguments to check any incoming GETs against
+      $this->validArguments = array(
+        'subfamily',
+        'genus',
+        'species', //specificEpithet
+        'type', // typeStatus
+        'bbox',
+        'date',  //dateIdentified
+        'elevation',  //minimumElevationInMeters
+        'state_province', //stateProvince
+        'georeferenced',
+        'limit',
+        'offset'
+      );
     }
 
     public function getColumnNames($table) {
@@ -36,6 +51,94 @@
       return $array;
 
     }
+
+    //for the sake of simplicity, the argument names are not necessarily the same as their corresponding field names
+    //some arguments also need to be massaged into correct formats
+    public function prepareArguments($args) {
+
+      if(isset($args['type'])) {
+        $args['typeStatus'] = $args['type'];
+        unset($args['type']);
+      }
+
+      if(isset($args['species'])) {
+        $args['specificEpithet'] = $args['species'];
+        unset($args['species']);
+      }
+
+      if(isset($args['state_province'])) {
+        $args['stateProvince'] = $args['state_province'];
+        unset($args['state_province']);
+      }
+
+      return $args;
+
+    }
+
+    public function getSpecimens($arguments) {
+
+      //validate arg for available field names
+      $args = array();
+      foreach($arguments AS $arg => $val) {
+        if(in_array($arg,$this->validArguments)) {
+          $args[$arg] = $val;
+        }
+      }
+
+      //validate args for allowed characters
+      foreach($args AS &$arg) {
+        $aValid = array('-','_');
+        if(!ctype_alnum(str_replace($aValid,'',$arg))) {
+          $arg = 'invalid';
+        }
+      }
+
+      print '<pre>'; print_r($this->validArguments); print '</pre>';
+      $args = $this->prepareArguments($args);
+      print '<pre>'; print_r($args); print '</pre>';
+
+      $sql = "SELECT * FROM darwin_core_2 WHERE 1";
+
+
+      $params = array();
+      foreach($args AS $arg => $val) {
+        if(!empty($arg)) {
+          $params[$arg] = $val;
+        }
+      }
+
+      foreach($params AS $key => $val) {
+        $sql .= sprintf(' AND `%s` = :%s',$key,$key);
+      }
+
+      print '<pre>'; print_r($params); print '</pre>';
+
+      $stmt = $this->_db->prepare($sql);
+
+      foreach ($params as $key => $val) {
+        // Using bindValue because bindParam binds a reference, which is
+        // only evaluated at the point of execute
+        $stmt->bindValue(':'.$key, $val);
+      }
+
+      $stmt->execute();
+
+      if($stmt->rowCount() > 0) {
+        $specimens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else {
+        $specimens = array('No records found.');
+        //http_response_code(204);
+      }
+
+      $specimens = $this->utf8Scrub($specimens);
+      return json_encode($specimens);
+
+      //$sql->execute(array($genus,$species));
+
+    }
+
+    /*
 
     public function getSpecies($genus,$species) {
 
@@ -107,7 +210,7 @@
 
       }
 
-      $specimen = $this->utf8Scrub($specimen);      
+      $specimen = $this->utf8Scrub($specimen);
       return json_encode($specimen);
 
     }
@@ -246,6 +349,8 @@
       return json_encode($images);
 
     }
+
+    */
 
     public function getImages($code) {
       $imgQuery = $this->_db->prepare("SELECT uid,shot_type,upload_date,shot_number,has_tiff FROM image WHERE image_of_id=? ORDER BY shot_number ASC");

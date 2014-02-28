@@ -1,11 +1,19 @@
 <?php
 
-header('Content-type: application/json');
+//header('Content-type: application/json');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/header.php');
 
-if($_REQUEST) {
+if($_GET) {
+
+  $arguments = $_GET;
 
   $antweb = new antweb($pdo);
+
+  $specimens = $antweb->getSpecimens($arguments);
+
+  print $specimens;
+
+/*
 
   if(isset($_REQUEST['rank'])) {
     $rank = $_REQUEST['rank'];
@@ -100,7 +108,9 @@ if($_REQUEST) {
     include('readme.html');
   }
 
+*/
 }
+
 else {
   header('Content-type: text/html');
   include('readme.html');
