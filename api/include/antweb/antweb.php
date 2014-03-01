@@ -71,7 +71,54 @@
         unset($args['state_province']);
       }
 
-      return $args;
+      if(isset($args['date'])) {
+        $dates = explode(',', $args['date']);
+
+        if(isset($dates[1])) {
+          print '<pre>'; print_r(count($dates)); print '</pre>';
+            $args['dateIdentified']['start_date'] = $dates[0];
+            $args['dateIdentified']['end_date'] = $dates[1];
+        }
+        else {
+          print '<pre>one: '; print_r(count($dates)); print '</pre>';
+          $args['dateIdentified'] = $dates[0];
+        }
+        unset($args['date']);
+      }
+
+      if(isset($args['elevation'])) {
+        $elevs = explode(',', $args['elevation']);
+
+        if(isset($elevs[1])) {
+          print '<pre>'; print_r(count($elevs)); print '</pre>';
+            $args['minimumElevationInMeters']['low_bound'] = $elevs[0];
+            $args['minimumElevationInMeters']['high_bound'] = $elevs[1];
+        }
+        else {
+          $args['minimumElevationInMeters'] = $elevs[0];
+        }
+        unset($args['elevation']);
+      }
+
+      if(isset($args['limit']) ) {
+        $limits['limit'] = $args['limit'];
+        unset($args['limit']);
+      }
+
+      if(isset($args['offset'])) {
+        $limits['offset'] = $args['offset'];
+        unset($args['offset']);
+      }
+
+      if(isset($args['georeferenced']) && is_bool($args['georeferenced'])) {
+        $limits['georeferenced'] = $args['georeferenced'];
+        unset($args['georeferenced']);
+      }
+
+      $sql_const['args'] = $args;
+      $sql_const['limits'] = $limits;
+
+      return $sql_const;
 
     }
 
@@ -87,54 +134,110 @@
 
       //validate args for allowed characters
       foreach($args AS &$arg) {
-        $aValid = array('-','_');
+        $aValid = array('-','_',',');
         if(!ctype_alnum(str_replace($aValid,'',$arg))) {
           $arg = 'invalid';
         }
       }
 
       print '<pre>'; print_r($this->validArguments); print '</pre>';
-      $args = $this->prepareArguments($args);
-      print '<pre>'; print_r($args); print '</pre>';
+      $sql_const = $this->prepareArguments($args);
+      $args = $sql_const['args'];
+      $limits = $sql_const['limits'];
+      print '<pre>args:'; print_r($args); print '</pre>';
+      print '<pre>limits:'; print_r($limits); print '</pre>';
 
-      $sql = "SELECT * FROM darwin_core_2 WHERE 1";
-
+      $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM darwin_core_2 WHERE 1";
 
       $params = array();
       foreach($args AS $arg => $val) {
         if(!empty($arg)) {
-          $params[$arg] = $val;
+          if(is_array($val)) {
+            foreach($val AS $k => $v) {
+              $params[$k] = $v;
+            }
+          }
+          else {
+            $params[$arg] = $val;
+          }
         }
       }
 
-      foreach($params AS $key => $val) {
-        $sql .= sprintf(' AND `%s` = :%s',$key,$key);
+      foreach($args AS $key => $val) {
+        if($key == 'dateIdentified' && is_array($val)) {
+          foreach($val AS $bound => $date) {
+            if($bound == 'start_date') {
+              $sql .= sprintf(' AND `%s` >= :%s',$key,$bound);
+            }
+            elseif($bound == 'end_date') {
+              $sql .= sprintf(' AND `%s` <= :%s',$key,$bound);
+            }
+          }
+        }
+        elseif($key == 'minimumElevationInMeters' && is_array($val)) {
+          print '<p>its elevation</p>';
+          foreach($val AS $bound => $date) {
+            if($bound == 'low_bound') {
+              $sql .= sprintf(' AND `%s` >= :%s',$key,$bound);
+            }
+            elseif($bound == 'high_bound') {
+              $sql .= sprintf(' AND `%s` <= :%s',$key,$bound);
+            }
+          }
+        }
+        else {
+          $sql .= sprintf(' AND `%s` = :%s',$key,$key);
+        }
       }
 
-      print '<pre>'; print_r($params); print '</pre>';
+      print '<pre>params:'; print_r($params); print '</pre>';
+
+      $sqlLim = $sql;
+      if(isset($limits) && !empty($limits)) {
+        if(isset($limits['limit'])) {
+
+          $limit = $limits['limit'];
+          $sqlLim .= " LIMIT $limit";
+          if(isset($limits['offset'])) {
+            $offset = $limits['offset'];
+            $sqlLim .= " OFFSET $offset";
+          }
+        }
+      }
+
+      print '<pre>'; print_r($sql); print '</pre>';
 
       $stmt = $this->_db->prepare($sql);
+      $stmtLim = $this->_db->prepare($sqlLim);
 
       foreach ($params as $key => $val) {
         // Using bindValue because bindParam binds a reference, which is
         // only evaluated at the point of execute
         $stmt->bindValue(':'.$key, $val);
+        $stmtLim->bindValue(':'.$key, $val);
+
       }
 
       $stmt->execute();
+      $stmtLim->execute();
 
-      if($stmt->rowCount() > 0) {
-        $specimens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $totalRex = $stmt->rowCount();
+      print '<pre>'; print_r($totalRex); print '</pre>';
+
+      if($stmtLim->rowCount() > 0) {
+
+        $specimens = $stmtLim->fetchAll(PDO::FETCH_ASSOC);
       }
       else {
         $specimens = array('No records found.');
         //http_response_code(204);
       }
 
-      $specimens = $this->utf8Scrub($specimens);
-      return json_encode($specimens);
-
-      //$sql->execute(array($genus,$species));
+      $results['count'] = $totalRex;
+      if(isset($limit)) $results['limit'] = $limit;
+      if(isset($offset)) $results['offset'] = $offset;
+      $results['specimens'] = $this->utf8Scrub($specimens);
+      return json_encode($results);
 
     }
 
