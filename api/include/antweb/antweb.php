@@ -94,12 +94,10 @@
         $dates = explode(',', $args['date']);
 
         if(isset($dates[1])) {
-          print '<pre>'; print_r(count($dates)); print '</pre>';
             $args['dateIdentified']['start_date'] = $dates[0];
             $args['dateIdentified']['end_date'] = $dates[1];
         }
         else {
-          print '<pre>one: '; print_r(count($dates)); print '</pre>';
           $args['dateIdentified'] = $dates[0];
         }
         unset($args['date']);
@@ -109,7 +107,6 @@
         $elevs = explode(',', $args['elevation']);
 
         if(isset($elevs[1])) {
-          print '<pre>'; print_r(count($elevs)); print '</pre>';
             $args['minimumElevationInMeters']['low_bound'] = $elevs[0];
             $args['minimumElevationInMeters']['high_bound'] = $elevs[1];
         }
@@ -177,13 +174,10 @@
             }
           }
           else {
-            print '<p>not arr</p>';
             $params[$arg] = $val;
           }
         }
       }
-
-      print '<pre>'; print_r($args); print '</pre>';
 
       foreach($args AS $key => $val) {
         if($key == 'dateIdentified' && is_array($val)) {
@@ -225,7 +219,6 @@
           }
         }
         elseif($key == 'minimumElevationInMeters' && is_array($val)) {
-          print '<p>its elevation</p>';
           foreach($val AS $bound => $date) {
             if($bound == 'low_bound') {
               $sql .= sprintf(' AND `%s` >= :%s',$key,$bound);
@@ -243,8 +236,6 @@
       if(isset($limits['georeferenced']) && $limits['georeferenced'] == 1) {
         $sql .= " AND decimalLatitude IS NOT NULL";
       }
-
-      print '<pre>'; print_r($sql); print '</pre>';
 
       $sqlLim = $sql;
       if(isset($limits) && !empty($limits)) {
