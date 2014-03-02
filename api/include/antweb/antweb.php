@@ -6,6 +6,22 @@
 
     public function __construct(PDO $db) {
       $this->_db = $db;
+
+      // a list of valid arguments to check any incoming GETs against
+      $this->validArguments = array(
+        'subfamily',
+        'genus',
+        'species', //specificEpithet
+        'type', // typeStatus
+        'bbox',
+        'date',  //dateIdentified
+        'elevation',  //minimumElevationInMeters
+        'state_province', //stateProvince
+        'habitat',
+        'georeferenced',
+        'limit',
+        'offset'
+      );
     }
 
     public function getColumnNames($table) {
@@ -38,213 +54,251 @@
 
     }
 
-    public function getSpecies($genus,$species) {
+    //for the sake of simplicity, the argument names are not necessarily the same as their corresponding field names
+    //some arguments also need to be massaged into correct formats
+    public function prepareArguments($args) {
 
-      if(!ctype_alnum($genus) || !ctype_alnum($species)) {
-        exit;
+      if(isset($args['type'])) {
+        $args['typeStatus'] = $args['type'];
+        unset($args['type']);
       }
 
-      $sql = $this->_db->prepare("SELECT * FROM specimen WHERE genus=? AND species=?");
-      $sql->execute(array($genus,$species));
+      if(isset($args['species'])) {
+        $args['specificEpithet'] = $args['species'];
+        unset($args['species']);
+      }
 
-      if($sql->rowCount() > 0) {
-        $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
+      if(isset($args['state_province'])) {
+        $args['stateProvince'] = $args['state_province'];
+        unset($args['state_province']);
+      }
+
+      if(isset($args['habitat'])) {
+        $args['habitat'] = "%" . $args['habitat'] . "%";
+      }
+
+      if(isset($args['bbox'])) {
+        $coords = explode(',', $args['bbox']);
+        if(count($coords) == 4) {
+          $x['lat1'] = $coords[0];
+          $y['lon1'] = $coords[1];
+          $x['lat2'] = $coords[2];
+          $y['lon2'] = $coords[3];
+
+          asort($x);
+          asort($y);
+
+          $args['xcoord'] = $x;
+          $args['ycoord'] = $y;
+
+        }
+        
+        unset($args['bbox']);
+      }
+
+      if(isset($args['date'])) {
+        $dates = explode(',', $args['date']);
+
+        if(isset($dates[1])) {
+            $args['dateIdentified']['start_date'] = $dates[0];
+            $args['dateIdentified']['end_date'] = $dates[1];
+        }
+        else {
+          $args['dateIdentified'] = $dates[0];
+        }
+        unset($args['date']);
+      }
+
+      if(isset($args['elevation'])) {
+        $elevs = explode(',', $args['elevation']);
+
+        if(isset($elevs[1])) {
+            $args['minimumElevationInMeters']['low_bound'] = $elevs[0];
+            $args['minimumElevationInMeters']['high_bound'] = $elevs[1];
+        }
+        else {
+          $args['minimumElevationInMeters'] = $elevs[0];
+        }
+        unset($args['elevation']);
+      }
+
+      if(isset($args['georeferenced'])) {
+        $georeferenced = $args['georeferenced'];
+        if(!is_null($georeferenced)) {
+          $limits['georeferenced'] = 1;
+        }
+        unset($args['georeferenced']);
+      }
+
+      if(isset($args['limit']) ) {
+        $limits['limit'] = $args['limit'];
+        unset($args['limit']);
+      }
+
+      if(isset($args['offset'])) {
+        $limits['offset'] = $args['offset'];
+        unset($args['offset']);
+      }
+
+      $sql_const['args'] = $args;
+      if(isset($limits)) $sql_const['limits'] = $limits;
+
+      return $sql_const;
+
+    }
+
+    public function getSpecimens($arguments) {
+
+      //validate arg for available field names
+      $args = array();
+      foreach($arguments AS $arg => $val) {
+        if(in_array($arg,$this->validArguments)) {
+          $args[$arg] = $val;
+        }
+      }
+
+      //validate args for allowed characters
+      foreach($args AS &$arg) {
+        $aValid = array('-','_',',','.');
+        if(!ctype_alnum(str_replace($aValid,'',$arg))) {
+          $arg = 'invalid';
+        }
+      }
+
+      $sql_const = $this->prepareArguments($args);
+      $args = $sql_const['args'];
+      $limits = $sql_const['limits'];
+
+      $sql = "SELECT * FROM darwin_core_2 WHERE 1";
+
+      $params = array();
+      foreach($args AS $arg => $val) {
+        if(!empty($arg)) {
+          if(is_array($val)) {
+            foreach($val AS $k => $v) {
+              $params[$k] = $v;
+            }
+          }
+          else {
+            $params[$arg] = $val;
+          }
+        }
+      }
+
+      foreach($args AS $key => $val) {
+        if($key == 'dateIdentified' && is_array($val)) {
+          foreach($val AS $bound => $date) {
+            if($bound == 'start_date') {
+              $sql .= sprintf(' AND `%s` >= :%s',$key,$bound);
+            }
+            elseif($bound == 'end_date') {
+              $sql .= sprintf(' AND `%s` <= :%s',$key,$bound);
+            }
+          }
+        }
+        elseif($key == 'xcoord') {
+          $sql .= ' AND decimalLatitude BETWEEN';
+          $i = 0;
+          foreach($val AS $coord => $val) {
+            if($i == 0) {
+              $sql .= sprintf(' :%s',$coord);
+              $i++;
+            }
+            else {
+              $sql .= sprintf(' AND :%s',$coord);
+              $i = 0;
+            }
+          }
+        }
+        elseif($key == 'ycoord') {
+          $sql .= ' AND decimalLongitude BETWEEN';
+          $i = 0;
+          foreach($val AS $coord => $val) {
+            if($i == 0) {
+              $sql .= sprintf(' :%s',$coord);
+              $i++;
+            }
+            else {
+              $sql .= sprintf(' AND :%s',$coord);
+              $i = 0;
+            }
+          }
+        }
+        elseif($key == 'minimumElevationInMeters' && is_array($val)) {
+          foreach($val AS $bound => $date) {
+            if($bound == 'low_bound') {
+              $sql .= sprintf(' AND `%s` >= :%s',$key,$bound);
+            }
+            elseif($bound == 'high_bound') {
+              $sql .= sprintf(' AND `%s` <= :%s',$key,$bound);
+            }
+          }
+        }
+        elseif($key == 'habitat') {
+          $sql .= ' AND `habitat` LIKE :habitat';
+        }
+        else {
+          $sql .= sprintf(' AND `%s` = :%s',$key,$key);
+        }
+      }
+
+      if(isset($limits['georeferenced']) && $limits['georeferenced'] == 1) {
+        $sql .= " AND decimalLatitude IS NOT NULL";
+      }
+
+      $sqlLim = $sql;
+      if(isset($limits) && !empty($limits)) {
+        if(isset($limits['limit'])) {
+
+          $limit = $limits['limit'];
+          $sqlLim .= " LIMIT $limit";
+          if(isset($limits['offset'])) {
+            $offset = $limits['offset'];
+            $sqlLim .= " OFFSET $offset";
+          }
+        }
+      }
+
+      $stmt = $this->_db->prepare($sql);
+      $stmtLim = $this->_db->prepare($sqlLim);
+
+      foreach ($params as $key => $val) {
+        // Using bindValue because bindParam binds a reference, which is
+        // only evaluated at the point of execute
+        $stmt->bindValue(':'.$key, $val);
+        $stmtLim->bindValue(':'.$key, $val);
+
+      }
+
+      $stmt->execute();
+      $stmtLim->execute();
+
+      $totalRex = $stmt->rowCount();
+
+      if($stmtLim->rowCount() > 0) {
+        $specimens = $stmtLim->fetchAll(PDO::FETCH_ASSOC);
+
+        $i = 0;
+        foreach($specimens AS &$s) {
+          $code = $s['catalogNumber'];
+          //$code = preg_replace('/-/','',$code);
+          if($this->getImages($code)) {
+             $s['images'] = $this->getImages($code);
+          }
+        }
       }
       else {
-        $specimens = 'No records found.';
+        $specimens = array('No records found.');
         //http_response_code(204);
       }
 
-      $specimens = $this->utf8Scrub($specimens);
-      return json_encode($specimens);
+      $results['count'] = $totalRex;
 
-    }
+      if(isset($limit)) $results['limit'] = $limit;
+      if(isset($offset)) $results['offset'] = $offset;
 
-    public function getSpecimens($rank,$name) {
-
-      $fields = $this->getColumnNames('specimen');
-
-      if (!in_array($rank, $fields)) {
-      exit;
-      }
-
-      if(!$name) {
-        $sql = $this->_db->prepare("SELECT distinct($rank) FROM specimen ORDER BY $rank ASC");
-        $sql->execute();
-        if($sql->rowCount() > 0) {
-          $ranks = $sql->fetchAll(PDO::FETCH_ASSOC);
-        }
-        else {
-          $ranks = 'No records found.';
-        }
-
-        $ranks = $this->utf8Scrub($ranks);
-        return json_encode($ranks);
-      }
-      else {
-        $sql = $this->_db->prepare("SELECT * FROM specimen WHERE $rank=?");
-        $sql->execute(array($name));
-        if($sql->rowCount() > 0) {
-          $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
-
-          $i = 0;
-
-          foreach($specimens AS $s) {
-
-            $specimen[$i]['meta'] = $s;
-
-            if($this->getImages($s['code'])) {
-              $specimen[$i]['images'] = $this->getImages($s['code']);
-            }
-
-            $i++;
-
-          }
-
-        }
-        else {
-        $specimen = 'No records found.';
-        }
-
-      }
-
-      $specimen = $this->utf8Scrub($specimen);      
-      return json_encode($specimen);
-
-    }
-
-    public function getSpecific($code) {
-
-      $sql = $this->_db->prepare("SELECT * FROM specimen WHERE code=?");
-      $sql->execute(array($code));
-      if($sql->rowCount() > 0) {
-          $specimen['meta'] = $sql->fetchAll(PDO::FETCH_ASSOC);
-
-        if($this->getImages($code)) {
-          $specimen['images'] = $this->getImages($code);
-        }
-
-        //  return json_encode($specimen);
-
-      }
-      else {
-        $specimen = 'No records found.';
-      }
-
-      $specimen = $this->utf8Scrub($specimen);
-      return json_encode($specimen);
-
-    }
-
-    public function getCoord($lat,$lon,$r) {
-
-      if( (!is_numeric($r)) || (!is_numeric($lat)) || (!is_numeric($lon)) ) {
-        exit;
-      }
-
-      $sql = $this->_db->prepare("SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( decimal_latitude ) ) * cos( radians( decimal_longitude ) - radians(:lon) ) + sin( radians(:lat) ) * sin( radians( decimal_latitude ) ) ) ) AS distance FROM specimen HAVING distance < $r ORDER BY distance");
-
-      $sql->execute(array(':lat' => $lat, ':lon' => $lon));
-
-      if($sql->rowCount() > 0) {
-
-        $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
-
-        $i = 0;
-
-          foreach($specimens AS $s) {
-
-            $specimen[$i]['meta'] = $s;
-
-            if($this->getImages($s['code'])) {
-              $specimen[$i]['images'] = $this->getImages($s['code']);
-            }
-
-            $i++;
-
-          }
-
-      }
-
-      $specimen = $this->utf8Scrub($specimen);
-      return json_encode($specimen);
-
-    }
-
-    public function getSpecimensCreatedAfter($days) {
-
-      $since = date('Y-m-d', strtotime("-$days days"));
-
-      $sql = $this->_db->prepare("SELECT * FROM specimen WHERE datedetermined>=?");
-      $sql->execute(array($since));
-
-      if($sql->rowCount() > 0) {
-
-        $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
-
-        $i = 0;
-
-          foreach($specimens AS $s) {
-
-            $specimen[$i]['meta'] = $s;
-
-            if($this->getImages($s['code'])) {
-              $specimen[$i]['images'] = $this->getImages($s['code']);
-            }
-
-            $i++;
-
-          }
-
-      }
-      else {
-        $specimen = 'No records found.';
-      }
-
-      $specimen = $this->utf8Scrub($specimen);
-      return json_encode($specimen);
-
-    }
-
-    public function getImagesAddedAfter($days,$type) {
-
-      $since = date('Y-m-d', strtotime("-$days days"));
-
-      if($type) {
-        $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=? AND shot_type=? ORDER BY shot_number ASC");
-        $sql->execute(array($since,$type));
-      }
-      else {
-        $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=? ORDER BY shot_number ASC");
-        $sql->execute(array($since));
-      }
-
-      if($sql->rowCount() > 0) {
-        $imgs = $sql->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach($imgs AS $img) {
-
-          $code = $img['image_of_id'];
-          $type = $img['shot_type'];
-
-          $shot_number = $img['shot_number'];
-
-          $images[$code][$shot_number]['upload_date'] = $img['upload_date'];
-
-          $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_high.jpg';
-          $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_low.jpg';
-          $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_med.jpg';
-          $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_thumbview.jpg';
-
-        }
-
-      }
-      else {
-        $images = NULL;
-      }
-
-      $images = $this->utf8Scrub($images);
-      return json_encode($images);
+      $results['specimens'] = $this->utf8Scrub($specimens);
+      return json_encode($results);
 
     }
 

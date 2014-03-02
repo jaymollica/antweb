@@ -8,81 +8,42 @@
         <h1>AntWeb API</h1>
 
         <p>This is an attempt to make the antweb data available to the public in an accessible format.</p>
-        <p>There are 4 ways to query specimen: By taxonomy, by specimen code, by decimal coordinates and by days since entry into database.</p>
 
-        <p><b>NOTE:</b> While this api is meant to be a firehose of sorts, there is a timeout set to prevent encumbering the server.  Large requests may not be fulfilled.</p>
+        <p><b>NOTE:</b> While this api is meant to be a firehose of sorts, there is a timeout set to prevent encumbering the server.  Large requests may not be fulfilled.  Using limits and offsets are encouraged.</p>
 
-        <p>Check out some examples <a href="#examples">below</a>.</p>
+        <h3>Possible Arguments</h3>
 
-        <h3>1. Get specimens by taxonomy rank and name.</h3>
-
-        <p>A. You can query the specimen by asking for a particular taxonomic rank and name of that rank.  So if you want all specimens of the genus <em>Colobostruma</em> your query would look like this:</p>
-
-        <p class="link"><a href="http://www.antweb.org/api/?rank=genus&name=colobostruma">http://www.antweb.org/api/?rank=genus&name=colobostruma</a></p>
-
-        <p>B. If you do not specify a particular name of the rank you want, the API will return a list of distinct names for that rank.  You can query for distinct subfamlies, genus or species.  So if you want a list of disctinct subfamilies in the antweb database your query would look like this:</p>
-
-        <p class="link"><a href="http://www.antweb.org/api/?rank=subfamily">http://www.antweb.org/api/?rank=subfamily</a></p>
-
-        <p><b>NOTE:</b> Querying for name alone will yield no results.</p>
-
-        <p>C. If you would like to find all specimen of a particular species belonging to a particular genus you can enter a query like this:</p>
-
-        <p class="link"><a href="http://www.antweb.org/api/?genus=acanthognathus&species=brevicornis">http://www.antweb.org/api/?genus=acanthognathus&species=brevicornis</a></p>
-
-        <p>If you only enter a genus or a species then the query will behave the same as using the rank and name method:</p>
-        <p class="link"><a href="http://www.antweb.org/api/?genus=acanthognathus">http://www.antweb.org/api/?genus=acanthognathus</a></p>
-        <p>Is the same as:</p>
-        <p class="link"><a href="http://www.antweb.org/api/?rank=genus&name=acanthognathus">http://www.antweb.org/api/?rank=genus&name=acanthognathus</a></p>
-
-        <h3>2. Get particular specimen using its unique code.</h3>
-
-        <p>Each specimen is given a unique id in the antweb database, if you have a specific specimen you would like to look up you can query for it like this:</p>
-
-        <p class="link">http://www.antweb.org/api/?code=CODE</p>
-
-        <p>For example, here is the query for specimen casent0104669:</p>
-
-        <p class="link"><a href="http://www.antweb.org/api/?code=casent0104669">http://www.antweb.org/api/?code=casent0104669</a></p>
-
-        <p>This will return all of the meta data surrounding the specimen, as well as a list of URLs for any images of the specimen.</p>
-
-        <h3>3. Get specimens by decimal coordinates.</h3>
-        <p>You can pull a list of specimens by decimal coordinates.  Your query would look like this:</p>
-        <p class="link">http://www.antweb.org/api/?coord=latitude,longitude</p>
-        <p>The latidude and longitude <em>must</em> be separated by a comma.</p>
-        <p>You can also define a specific radius in kilometers that you'd like to cover:</p>
-        <p class="link">http://www.antweb.org/api/?coord=latitude,longitude&r=radius</p>
-        <p>The radius defaults at 5 km.</p>
-
-        <p>Here is the query for all specimen collected within a 2 km radius of the California Academy of Sciences.</p>
-
-        <p class="link"><a href="http://www.antweb.org/api/?coord=37.76,-122.45&r=2">http://www.antweb.org/api/?coord=37.76,-122.45&r=2</a>
-
-        <h3>4. Get latest specimens or images</h3>
-        <p>You can pull a list of either the latest specimens or images that have been added to the database.</p>
-        <p>To get a list of the latest specimens, query for the number of days in the past you'd like to go.  So if you'd like a list of specimens added in the last week, your query would look like this:</p>
-        <p class="link"><a href="http://www.antweb.org/api/?since=7">http://www.antweb.org/api/?since=7</a></p>
-        <p>If you would like to get the images added in the last week, just add an argument that qualifies you are looking for images:</p>
-        <p class="link"><a href="http://www.antweb.org/api/?since=7&img=true">http://www.antweb.org/api/?since=7&img=true</a></p>
-        <p>If you would like to find only images of a certain type add an argument for the type of image you are looking for.<p>
-        <p>There are four types of images:</p>
         <ul>
-            <li>H = head</li>
-            <li>D = dorsal</li>
-            <li>P = profile</li>
-            <li>L = label</li>
+            <li><b>Subfamily</b></li>
+            <li><b>Genus</b></li>
+            <li><b>Species</b></li>
+            <li><b>Type</b> (e.g. holotype)</li>
+            <li><b>Habitat</b> This uses a wildcard so a query for ?habitat=sand will return any habitat containing the word sand (e.g. sandstone)</li>
+            <li><b>Bbox</b> This is a bounded box of decimal coordinates in the format ?bbox=x1,y1,x2,y2</li>
+            <li><b>Date</b> Query on a single date (?date=yyyy-mm-dd), or a date boundary (?date=yyyy-mm-dd,yyyy-mm-dd)</li>
+            <li><b>Elevation</b> This is measured in meters.  Query on a specific elevation (?elevation=1200), or a boundary (?elevation=1200,2000)</li>
+            <li><b>Georeferenced</b> This is a boolean argument to filter for only geo referenced specimen (?georeferenced=true)</li>
+            <li><b>Limit</b> Limit the number of specimen returned on large requests (?limit=100)</li>
+            <li><b>Offset</b> Used to paginate large requests when paired with the limit argument (this would return records 300-400: ?limit=100&offset=300)
         </ul>
 
-        <p>So your query would look like this if you wanted only head shots from the last week:</p>
-        <p class="link"><a href="http://www.antweb.org/api/?since=7&img=true&type=h">http://www.antweb.org/api/?since=7&img=true&type=h</a></p>
-
         <h3>Examples</h3>
-        <a name="examples"></a>
 
-        <p>1. <a href="http://www.vaguespace.org/ants/" target="_blank">Taxonomy sunburst visualization</a><p>
-        <p>2. <a href="http://www.myantname.com" target="_blank">What&rsquo;s your ant name?</a><p>
-        <p>3. <a href="http://www.antweb.org/api/demo/map/" target="_blank">Discover which specimens were collected nearby</a> - Note: you must view this example on a device with location services enabled.</p>
+        <p>A query for all specimen of genus Technomyrmex found near The California Academy of Sciences:</p>
+        <p class="link"><a href="http://www.antweb.org/api/?bbox=37.77,-122.46,37.76,-122.47&genus=Technomyrmex">http://www.antweb.org/api/?bbox=37.77,-122.46,37.76,-122.47&genus=Technomyrmex</a></p>
+
+        <p>A query for all specimen of the genus Tetramorium that were identified in the 1970&rsquo;s:</p>
+        <p class="link"><a href="http://www.antweb.org/api/?date=1970-01-01,1979-12-31&genus=Tetramorium">http://www.antweb.org/api/?date=1970-01-01,1979-12-31&genus=Tetramorium</a></p>
+
+        <p>A query for all specimen of genus Acanthognathus with a limit off 100 records returned and an offset of 200 records (meaning records 200 &ndash; 300 were returned) :
+
+        <p class="link"><a href="http://www.antweb.org/api/?genus=acanthognathus&limit=100&offset=200">http://www.antweb.org/api/?genus=acanthognathus&limit=100&offset=200</a></p>
+
+        <p>A query for all holotypes in the database that have geo data:</p>
+
+        <p class="link"><a href="http://www.antweb.org/api/?type=holotype&georeferenced=true">http://www.antweb.org/api/?type=holotype&georeferenced=true</a></p>
+
+        <h3></h3>
 
     </div>
 
