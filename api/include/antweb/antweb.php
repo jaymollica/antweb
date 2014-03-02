@@ -40,12 +40,17 @@
 
     }
 
+    public function validateDate($date, $format = 'Y-m-d H:i:s') {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
+    }
+
     //some of the characters coming out of the db are not utf8 encoded and throwing warnings in the log
     public function utf8Scrub($array) {
 
       array_walk_recursive(
               $array, function (&$value) {
-                  $value = trim(preg_replace('/ +/', ' ', preg_replace('/[^A-Za-z0-9 ]/', ' ', urldecode(html_entity_decode(strip_tags($value))))));
+                  $value = trim(preg_replace('/ +/', ' ', preg_replace('/[^A-Za-z0-9.,:-]/', ' ', urldecode(html_entity_decode(strip_tags($value))))));
                   $value = htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
               }
       );
@@ -104,7 +109,9 @@
             $args['dateIdentified']['end_date'] = $dates[1];
         }
         else {
-          $args['dateIdentified'] = $dates[0];
+          if($this->validateDate($dates[0], $format = 'Y-m-d')) {
+            $args['dateIdentified'] = $dates[0];
+          }          
         }
         unset($args['date']);
       }
@@ -169,7 +176,23 @@
       $args = $sql_const['args'];
       $limits = $sql_const['limits'];
 
-      $sql = "SELECT * FROM darwin_core_2 WHERE 1";
+      $sql = "SELECT occurrenceId,
+                     catalogNumber,
+                     family,
+                     subfamily,
+                     genus,
+                     specificEpithet,
+                     scientific_name,
+                     typeStatus,
+                     stateProvince,
+                     country,
+                     decimalLatitude,
+                     decimalLongitude,
+                     dateIdentified,
+                     habitat,
+                     minimumElevationInMeters
+
+                     FROM darwin_core_2 WHERE 1";
 
       $params = array();
       foreach($args AS $arg => $val) {
