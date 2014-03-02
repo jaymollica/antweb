@@ -46,3 +46,7 @@ h2,h3 {
   margin-top:5%;
   margin-bottom:5%;
 }
+
+ul {
+  line-height:20px;
+}

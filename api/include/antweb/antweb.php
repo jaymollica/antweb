@@ -17,6 +17,7 @@
         'date',  //dateIdentified
         'elevation',  //minimumElevationInMeters
         'state_province', //stateProvince
+        'habitat',
         'georeferenced',
         'limit',
         'offset'
@@ -69,6 +70,10 @@
       if(isset($args['state_province'])) {
         $args['stateProvince'] = $args['state_province'];
         unset($args['state_province']);
+      }
+
+      if(isset($args['habitat'])) {
+        $args['habitat'] = "%" . $args['habitat'] . "%";
       }
 
       if(isset($args['bbox'])) {
@@ -227,6 +232,9 @@
               $sql .= sprintf(' AND `%s` <= :%s',$key,$bound);
             }
           }
+        }
+        elseif($key == 'habitat') {
+          $sql .= ' AND `habitat` LIKE :habitat';
         }
         else {
           $sql .= sprintf(' AND `%s` = :%s',$key,$key);
