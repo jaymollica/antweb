@@ -1,6 +1,6 @@
 <?php
 
-header('Content-type: application/json');
+//header('Content-type: application/json');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/header.php');
 
 if($_GET) {
