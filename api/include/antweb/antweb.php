@@ -71,16 +71,33 @@
         unset($args['state_province']);
       }
 
+      if(isset($args['bbox'])) {
+        $coords = explode(',', $args['bbox']);
+        if(count($coords) == 4) {
+          $x['lat1'] = $coords[0];
+          $y['lon1'] = $coords[1];
+          $x['lat2'] = $coords[2];
+          $y['lon2'] = $coords[3];
+
+          asort($x);
+          asort($y);
+
+          $args['xcoord'] = $x;
+          $args['ycoord'] = $y;
+
+        }
+        
+        unset($args['bbox']);
+      }
+
       if(isset($args['date'])) {
         $dates = explode(',', $args['date']);
 
         if(isset($dates[1])) {
-          print '<pre>'; print_r(count($dates)); print '</pre>';
             $args['dateIdentified']['start_date'] = $dates[0];
             $args['dateIdentified']['end_date'] = $dates[1];
         }
         else {
-          print '<pre>one: '; print_r(count($dates)); print '</pre>';
           $args['dateIdentified'] = $dates[0];
         }
         unset($args['date']);
@@ -90,7 +107,6 @@
         $elevs = explode(',', $args['elevation']);
 
         if(isset($elevs[1])) {
-          print '<pre>'; print_r(count($elevs)); print '</pre>';
             $args['minimumElevationInMeters']['low_bound'] = $elevs[0];
             $args['minimumElevationInMeters']['high_bound'] = $elevs[1];
         }
@@ -137,18 +153,15 @@
 
       //validate args for allowed characters
       foreach($args AS &$arg) {
-        $aValid = array('-','_',',');
+        $aValid = array('-','_',',','.');
         if(!ctype_alnum(str_replace($aValid,'',$arg))) {
           $arg = 'invalid';
         }
       }
 
-      print '<pre>'; print_r($this->validArguments); print '</pre>';
       $sql_const = $this->prepareArguments($args);
       $args = $sql_const['args'];
       $limits = $sql_const['limits'];
-      print '<pre>args:'; print_r($args); print '</pre>';
-      print '<pre>limits:'; print_r($limits); print '</pre>';
 
       $sql = "SELECT * FROM darwin_core_2 WHERE 1";
 
@@ -177,8 +190,35 @@
             }
           }
         }
+        elseif($key == 'xcoord') {
+          $sql .= ' AND decimalLatitude BETWEEN';
+          $i = 0;
+          foreach($val AS $coord => $val) {
+            if($i == 0) {
+              $sql .= sprintf(' :%s',$coord);
+              $i++;
+            }
+            else {
+              $sql .= sprintf(' AND :%s',$coord);
+              $i = 0;
+            }
+          }
+        }
+        elseif($key == 'ycoord') {
+          $sql .= ' AND decimalLongitude BETWEEN';
+          $i = 0;
+          foreach($val AS $coord => $val) {
+            if($i == 0) {
+              $sql .= sprintf(' :%s',$coord);
+              $i++;
+            }
+            else {
+              $sql .= sprintf(' AND :%s',$coord);
+              $i = 0;
+            }
+          }
+        }
         elseif($key == 'minimumElevationInMeters' && is_array($val)) {
-          print '<p>its elevation</p>';
           foreach($val AS $bound => $date) {
             if($bound == 'low_bound') {
               $sql .= sprintf(' AND `%s` >= :%s',$key,$bound);
@@ -193,11 +233,9 @@
         }
       }
 
-      if($limits['georeferenced'] == 1) {
+      if(isset($limits['georeferenced']) && $limits['georeferenced'] == 1) {
         $sql .= " AND decimalLatitude IS NOT NULL";
       }
-
-      print '<pre>params:'; print_r($params); print '</pre>';
 
       $sqlLim = $sql;
       if(isset($limits) && !empty($limits)) {
@@ -211,8 +249,6 @@
           }
         }
       }
-
-      print '<pre>'; print_r($sql); print '</pre>';
 
       $stmt = $this->_db->prepare($sql);
       $stmtLim = $this->_db->prepare($sqlLim);
