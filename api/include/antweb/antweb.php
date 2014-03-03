@@ -65,7 +65,7 @@
     public function prepareArguments($args) {
 
       if(isset($args['type'])) {
-        $args['typeStatus'] = $args['type'];
+        $args['typeStatus'] = "%" . $args['type'] . "%";
         unset($args['type']);
       }
 
@@ -268,6 +268,9 @@
         }
         elseif($key == 'habitat') {
           $sql .= ' AND `habitat` LIKE :habitat';
+        }
+        elseif($key == 'typeStatus') {
+          $sql .= ' AND `typeStatus` LIKE :typeStatus';
         }
         else {
           $sql .= sprintf(' AND `%s` = :%s',$key,$key);
