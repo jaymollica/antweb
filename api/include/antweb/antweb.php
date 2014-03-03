@@ -109,6 +109,7 @@
 
       if(isset($args['date'])) {
         $dates = explode(',', $args['date']);
+        sort($dates);
 
         if(isset($dates[1])) {
             $args['dateIdentified']['start_date'] = $dates[0];
@@ -130,7 +131,6 @@
             $args['minimumElevationInMeters']['low_bound'] = $elevs[0];
             $args['minimumElevationInMeters']['high_bound'] = $elevs[1];
             asort($args['minimumElevationInMeters']);
-            print '<pre>'; print_r($elevs); print '</pre>';
         }
         else {
           $args['minimumElevationInMeters'] = $elevs[0];
