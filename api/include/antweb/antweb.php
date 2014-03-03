@@ -9,6 +9,7 @@
 
       // a list of valid arguments to check any incoming GETs against
       $this->validArguments = array(
+        'occurrenceId', //occurrenceId
         'subfamily',
         'genus',
         'species', //specificEpithet
@@ -50,7 +51,7 @@
 
       array_walk_recursive(
               $array, function (&$value) {
-                  $value = trim(preg_replace('/ +/', ' ', preg_replace('/[^A-Za-z0-9.,:-]/', ' ', urldecode(html_entity_decode(strip_tags($value))))));
+                  $value = trim(preg_replace('/ +/', ' ', preg_replace('/[^A-Za-z0-9_.\/,:?=-]/',' ', urldecode(html_entity_decode(strip_tags($value))))));
                   $value = htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
               }
       );
@@ -76,6 +77,11 @@
       if(isset($args['state_province'])) {
         $args['stateProvince'] = $args['state_province'];
         unset($args['state_province']);
+      }
+
+      if(isset($args['code'])) {
+        $args['occurrenceId'] = $args['code'];
+        unset($args['code']);
       }
 
       if(isset($args['habitat'])) {
@@ -166,7 +172,7 @@
 
       //validate args for allowed characters
       foreach($args AS &$arg) {
-        $aValid = array('-','_',',','.');
+        $aValid = array('-','_',',','.',':');
         if(!ctype_alnum(str_replace($aValid,'',$arg))) {
           $arg = 'invalid';
         }
@@ -301,6 +307,29 @@
       if($stmtLim->rowCount() > 0) {
         $specimens = $stmtLim->fetchAll(PDO::FETCH_ASSOC);
 
+        foreach($specimens AS &$s) {
+          if(!is_null($s['decimalLatitude'])) {
+            $geojson = array(
+              'type' => 'point',
+              'coord' => array(
+                  $s['decimalLatitude'],
+                  $s['decimalLongitude']
+                )
+            );
+
+            unset($s['decimalLongitude']);
+            unset($s['decimalLatitude']);
+
+            $s['geojson'] = $geojson;
+
+          }
+
+          $url = 'http://antweb.org/api/?occurrenceId=' . $s['occurrenceId'];
+          $s = array('url' => $url) + $s;
+          unset($s['occurrenceId']);
+
+        }
+
         $i = 0;
         foreach($specimens AS &$s) {
           $code = $s['catalogNumber'];
@@ -311,7 +340,7 @@
         }
       }
       else {
-        $specimens = array('No records found.');
+        $specimens = array('empty_set' => 'No records found.');
         //http_response_code(204);
       }
 
@@ -321,6 +350,7 @@
       if(isset($offset)) $results['offset'] = $offset;
 
       $results['specimens'] = $this->utf8Scrub($specimens);
+
       return json_encode($results);
 
     }
