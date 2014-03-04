@@ -80,5 +80,6 @@ publish
 ####################
 
 api/include/header.php
+api/v2/include/header.php
 api/demo/
 demo/

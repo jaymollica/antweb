@@ -15,8 +15,10 @@
         'species', //specificEpithet
         'type', // typeStatus
         'bbox',
-        'date',  //dateIdentified
-        'elevation',  //minimumElevationInMeters
+        'min_date', //dateIdentified
+        'max_date',  //dateIdentified
+        'min_elevation', //minimumElevationInMeters
+        'max_elevation',  //minimumElevationInMeters
         'state_province', //stateProvince
         'habitat',
         'georeferenced',
@@ -79,11 +81,6 @@
         unset($args['state_province']);
       }
 
-      if(isset($args['code'])) {
-        $args['occurrenceId'] = $args['code'];
-        unset($args['code']);
-      }
-
       if(isset($args['habitat'])) {
         $args['habitat'] = "%" . $args['habitat'] . "%";
       }
@@ -103,39 +100,8 @@
           $args['ycoord'] = $y;
 
         }
-        
+
         unset($args['bbox']);
-      }
-
-      if(isset($args['date'])) {
-        $dates = explode(',', $args['date']);
-        sort($dates);
-
-        if(isset($dates[1])) {
-            $args['dateIdentified']['start_date'] = $dates[0];
-            $args['dateIdentified']['end_date'] = $dates[1];
-        }
-        else {
-          if($this->validateDate($dates[0], $format = 'Y-m-d')) {
-            $args['dateIdentified'] = $dates[0];
-          }          
-        }
-        unset($args['date']);
-      }
-
-      if(isset($args['elevation'])) {
-        $elevs = explode(',', $args['elevation']);
-
-        if(isset($elevs[1])) {
-            sort($elevs);
-            $args['minimumElevationInMeters']['low_bound'] = $elevs[0];
-            $args['minimumElevationInMeters']['high_bound'] = $elevs[1];
-            asort($args['minimumElevationInMeters']);
-        }
-        else {
-          $args['minimumElevationInMeters'] = $elevs[0];
-        }
-        unset($args['elevation']);
       }
 
       if(isset($args['georeferenced'])) {
@@ -183,7 +149,9 @@
 
       $sql_const = $this->prepareArguments($args);
       $args = $sql_const['args'];
-      $limits = $sql_const['limits'];
+      if(isset($sql_const['limits'])) $limits = $sql_const['limits'];
+
+
 
       $sql = "SELECT occurrenceId,
                      catalogNumber,
@@ -203,30 +171,35 @@
 
                      FROM darwin_core_2 WHERE 1";
 
+
       $params = array();
-      foreach($args AS $arg => $val) {
-        if(!empty($arg)) {
-          if(is_array($val)) {
-            foreach($val AS $k => $v) {
-              $params[$k] = $v;
-            }
+      foreach($args AS $key => $val) {
+        if(is_array($val)) {
+          foreach($val AS $k => $v) {
+            $params[$k] = $v;
           }
-          else {
-            $params[$arg] = $val;
-          }
+        }
+        else {
+          $params[$key] = $val;
         }
       }
 
       foreach($args AS $key => $val) {
-        if($key == 'dateIdentified' && is_array($val)) {
-          foreach($val AS $bound => $date) {
-            if($bound == 'start_date') {
-              $sql .= sprintf(' AND `%s` >= :%s',$key,$bound);
-            }
-            elseif($bound == 'end_date') {
-              $sql .= sprintf(' AND `%s` <= :%s',$key,$bound);
-            }
-          }
+        if($key == 'min_date') {
+          $mind = 'dateIdentified';
+          $sql .= sprintf(' AND `%s` >= :%s',$mind,$key);
+        }
+        elseif($key == 'max_date') {
+          $maxd = 'dateIdentified';
+          $sql .= sprintf(' AND `%s` <= :%s',$maxd,$key);
+        }
+        elseif($key == 'min_elevation') {
+          $mine = 'minimumElevationInMeters';
+          $sql .= sprintf(' AND `%s` >= :%s',$mine,$key);
+        }
+        elseif($key == 'max_elevation') {
+          $maxe = 'minimumElevationInMeters';
+          $sql .= sprintf(' AND `%s` <= :%s',$maxe,$key);
         }
         elseif($key == 'xcoord') {
           $sql .= ' AND decimalLatitude BETWEEN';
@@ -253,16 +226,6 @@
             else {
               $sql .= sprintf(' AND :%s',$coord);
               $i = 0;
-            }
-          }
-        }
-        elseif($key == 'minimumElevationInMeters' && is_array($val)) {
-          foreach($val AS $bound => $date) {
-            if($bound == 'low_bound') {
-              $sql .= sprintf(' AND `%s` >= :%s',$key,$bound);
-            }
-            elseif($bound == 'high_bound') {
-              $sql .= sprintf(' AND `%s` <= :%s',$key,$bound);
             }
           }
         }
@@ -330,7 +293,7 @@
 
           }
 
-          $url = 'http://antweb.org/api/?occurrenceId=' . $s['occurrenceId'];
+          $url = 'http://antweb.org/api/v2/?occurrenceId=' . $s['occurrenceId'];
           $s = array('url' => $url) + $s;
           unset($s['occurrenceId']);
 
