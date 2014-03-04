@@ -1,6 +1,6 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/header.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/api/v1/include/header.php');
 
 if($_REQUEST) {
 
