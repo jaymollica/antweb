@@ -6,42 +6,92 @@
   <body>
     <div class="container">
         <h1>AntWeb API</h1>
+        <div class="version">Version 2</div>
 
         <p>This is an attempt to make the antweb data available to the public in an accessible format.</p>
 
+        <p>AntWeb is the world&rsquo;s largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.</p>
+
         <p><b>NOTE:</b> While this api is meant to be a firehose of sorts, there is a timeout set to prevent encumbering the server.  Large requests may not be fulfilled.  Using limits and offsets are encouraged.</p>
 
-        <h3>Possible Arguments</h3>
+        <h3>Available Arguments</h3>
 
-        <ul>
-            <li><b>Subfamily</b></li>
-            <li><b>Genus</b></li>
-            <li><b>Species</b></li>
-            <li><b>Type</b> (e.g. holotype)</li>
-            <li><b>Habitat</b> This uses a wildcard so a query for ?habitat=sand will return any habitat containing the word sand (e.g. sandstone)</li>
-            <li><b>Bbox</b> This is a bounded box of decimal coordinates in the format ?bbox=x1,y1,x2,y2</li>
-            <li><b>Date</b> Query on a single date (?date=yyyy-mm-dd), or a date boundary (?date=yyyy-mm-dd,yyyy-mm-dd)</li>
-            <li><b>Elevation</b> This is measured in meters.  Query on a specific elevation (?elevation=1200), or a boundary (?elevation=1200,2000)</li>
-            <li><b>Georeferenced</b> This is a boolean argument to filter for only geo referenced specimen (?georeferenced=true)</li>
-            <li><b>Limit</b> Limit the number of specimen returned on large requests (?limit=100)</li>
-            <li><b>Offset</b> Used to paginate large requests when paired with the limit argument (this would return records 300-400: ?limit=100&offset=300)
-        </ul>
+        <table class="arguments">
+
+            <tr>
+                <td><b>Subfamily</b></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><b>Genus</b></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><b>Species</b></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td><b>Occurrence ID</b></td>
+                <td>The unique identifier of a particular specimen on Antweb (occurrenceId=antweb:inb0003695883)</td>
+            </tr>
+            <tr>
+                <td><b>Habitat</b></td>
+                <td>This uses a wildcard so a query for ?habitat=sand will return any habitat containing the word sand (e.g. sandstone)</td>
+            </tr>
+            <tr>
+                <td><b>Type</b></td>
+                <td>(e.g. holotype), this is a wildcard</td>
+            </tr>
+            <tr>
+                <td><b>Bbox</b></td>
+                <td>This is a bounded box of decimal coordinates in the format ?bbox=x1,y1,x2,y2</td>
+            </tr>
+            <tr>
+                <td><b>Min Date</b></td>
+                <td>Query for specimen identified on or after a single date (?min_date=yyyy-mm-dd)</td>
+            </tr>
+             <tr>
+                <td><b>Max Date</b></td>
+                <td>Query for specimen identified on or before a single date (?max_date=yyyy-mm-dd)</td>
+            </tr>
+            <tr>
+                <td><b>Min Elevation</b></td>
+                <td>This is measured in meters.  Query on specimen found at or above a specific elevation (?min_elevation=1200)</td>
+            </tr>
+            <tr>
+                <td><b>Max Elevation</b></td>
+                <td>This is measured in meters.  Query on specimen found at or below a specific elevation (?max_elevation=1200)</td>
+            </tr>
+            <tr>
+                <td><b>Georeferenced</b></td>
+                <td>This is a boolean argument to filter for only geo referenced specimen (?georeferenced=true)</td>
+            </tr>
+            <tr>
+                <td><b>Limit</b></td>
+                <td>Limit the number of specimen returned on large requests (?limit=100)</td>
+            </tr>
+            <tr>
+                <td><b>Offset</b></td>
+                <td>Used to paginate large requests when paired with the limit argument (this would return records 301-400: ?limit=100&offset=300)</td>
+            </tr>
+
+        </table>
 
         <h3>Examples</h3>
 
         <p>A query for all specimen of genus Technomyrmex found near The California Academy of Sciences:</p>
-        <p class="link"><a href="http://www.antweb.org/api/?bbox=37.77,-122.46,37.76,-122.47&genus=Technomyrmex">http://www.antweb.org/api/?bbox=37.77,-122.46,37.76,-122.47&genus=Technomyrmex</a></p>
+        <p class="link"><a href="http://www.antweb.org/api/v2/?bbox=37.77,-122.46,37.76,-122.47&genus=Technomyrmex">http://www.antweb.org/api/v2/?bbox=37.77,-122.46,37.76,-122.47&genus=Technomyrmex</a></p>
 
         <p>A query for all specimen of the genus Tetramorium that were identified in the 1970&rsquo;s:</p>
-        <p class="link"><a href="http://www.antweb.org/api/?date=1970-01-01,1979-12-31&genus=Tetramorium">http://www.antweb.org/api/?date=1970-01-01,1979-12-31&genus=Tetramorium</a></p>
+        <p class="link"><a href="http://www.antweb.org/api/v2/?date=1970-01-01,1979-12-31&genus=Tetramorium">http://www.antweb.org/api/v2/?date=1970-01-01,1979-12-31&genus=Tetramorium</a></p>
 
-        <p>A query for all specimen of genus Acanthognathus with a limit off 100 records returned and an offset of 200 records (meaning records 200 &ndash; 300 were returned) :
+        <p>A query for all specimen of genus Acanthognathus with a limit off 100 records returned and an offset of 200 records (meaning records 201 &ndash; 300 were returned) :
 
-        <p class="link"><a href="http://www.antweb.org/api/?genus=acanthognathus&limit=100&offset=200">http://www.antweb.org/api/?genus=acanthognathus&limit=100&offset=200</a></p>
+        <p class="link"><a href="http://www.antweb.org/api/v2/?genus=acanthognathus&limit=100&offset=200">http://www.antweb.org/api/v2/?genus=acanthognathus&limit=100&offset=200</a></p>
 
         <p>A query for all holotypes in the database that have geo data:</p>
 
-        <p class="link"><a href="http://www.antweb.org/api/?type=holotype&georeferenced=true">http://www.antweb.org/api/?type=holotype&georeferenced=true</a></p>
+        <p class="link"><a href="http://www.antweb.org/api/v2/?type=holotype&georeferenced=true">http://www.antweb.org/api/v2/?type=holotype&georeferenced=true</a></p>
 
         <h3></h3>
 

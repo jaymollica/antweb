@@ -17,12 +17,29 @@ a {
   color:white;
 }
 
+  table {
+    border-collapse: collapse;
+    background-color:rgb(255,255,255);
+    background-color:rgba(255,255,255,0.5);
+  }
+
+.arguments td {
+  font-size: 1.2em;
+  padding:10px;
+  border:1px solid black;
+}
+
 .link, .link a {
   text-decoration:none;
   color:white;
   opacity:1;
   background-color:#443D33;
   padding:3px;
+}
+
+.arguments tr {
+  padding:0;
+  margin:0;
 }
 
 a:hover {
@@ -33,6 +50,13 @@ a:hover {
 h1 {
   color:white;
   font-family:'Helvetica', 'Arial', sans-serif;
+  margin-bottom:0;
+}
+
+.version {
+  font-family:'Helvetica', 'Arial', sans-serif;
+  font-size:.9em;
+  color:white;
 }
 
 h2,h3 {
@@ -41,10 +65,7 @@ h2,h3 {
 
 .container {
   width:80%;
-  margin-left:auto;
-  margin-right:auto;
-  margin-top:5%;
-  margin-bottom:5%;
+  margin: 5% auto 5% auto;
 }
 
 ul {
