@@ -324,6 +324,90 @@
 
     }
 
+    //returns an array of distinct names of given rank
+    public function getRank($rank) {
+
+      if(in_array($rank, $this->validArguments)) {
+        $sql = $this->_db->prepare("SELECT distinct($rank) FROM darwin_core_2 ORDER BY $rank ASC");
+        $sql->execute();
+        if($sql->rowCount() > 0) {
+          $ranks = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+          return json_encode($ranks);
+
+        }
+      }
+    }
+
+    public function getCoord($lat,$lon,$r) {
+
+      if( (!is_numeric($r)) || (!is_numeric($lat)) || (!is_numeric($lon)) ) {
+        exit;
+      }
+
+      $sql = $this->_db->prepare(" SELECT
+                     occurrenceId,
+                     catalogNumber,
+                     family,
+                     subfamily,
+                     genus,
+                     specificEpithet,
+                     scientific_name,
+                     typeStatus,
+                     stateProvince,
+                     country,
+                     decimalLatitude,
+                     decimalLongitude,
+                     dateIdentified,
+                     habitat,
+                     minimumElevationInMeters,
+                     ( 6371 * acos( cos( radians(:lat) ) * cos( radians( decimalLatitude ) ) * cos( radians( decimalLongitude ) - radians(:lon) ) + sin( radians(:lat) ) * sin( radians( decimalLatitude ) ) ) ) AS distance
+                     FROM darwin_core_2 HAVING distance < $r ORDER BY distance");
+
+      $sql->execute(array(':lat' => $lat, ':lon' => $lon));
+
+      if($sql->rowCount() > 0) {
+
+        $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach($specimens AS &$s) {
+          if(!is_null($s['decimalLatitude'])) {
+            $geojson = array(
+              'type' => 'point',
+              'coord' => array(
+                  $s['decimalLatitude'],
+                  $s['decimalLongitude']
+                )
+            );
+
+            unset($s['decimalLongitude']);
+            unset($s['decimalLatitude']);
+
+            $s['geojson'] = $geojson;
+
+          }
+
+          $url = 'http://antweb.org/api/v2/?occurrenceId=' . $s['occurrenceId'];
+          $s = array('url' => $url) + $s;
+          unset($s['occurrenceId']);
+
+        }
+
+        $i = 0;
+        foreach($specimens AS &$s) {
+          $code = $s['catalogNumber'];
+          //$code = preg_replace('/-/','',$code);
+          if($this->getImages($code)) {
+             $s['images'] = $this->getImages($code);
+          }
+        }
+
+      }
+
+      return json_encode($specimens);
+
+    }
+
     public function getImages($code) {
       $imgQuery = $this->_db->prepare("SELECT uid,shot_type,upload_date,shot_number,has_tiff FROM image WHERE image_of_id=? ORDER BY shot_number ASC");
       $imgQuery->execute(array($code));

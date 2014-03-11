@@ -20,15 +20,15 @@
 
             <tr>
                 <td><b>Subfamily</b></td>
-                <td>&nbsp;</td>
+                <td>Return only specimens of a specific subfamily.</td>
             </tr>
             <tr>
                 <td><b>Genus</b></td>
-                <td>&nbsp;</td>
+                <td>Return only specimens of a specific genus.</td>
             </tr>
             <tr>
                 <td><b>Species</b></td>
-                <td>&nbsp;</td>
+                <td>Return only specimens of a specific species.</td>
             </tr>
             <tr>
                 <td><b>Occurrence ID</b></td>
@@ -75,6 +75,24 @@
                 <td>Used to paginate large requests when paired with the limit argument (this would return records 301-400: ?limit=100&offset=300)</td>
             </tr>
 
+        </table>
+
+        <table class="arguments">
+            <tr>
+                <td><b>Rank</b></td>
+                <td>Return a list of unique names for a given rank. (?rank=genus)</td>
+            </tr>
+        </table>
+
+        <table class="arguments">
+            <tr>
+                <td><b>Coord</b></td>
+                <td>Return a list of specimens by decimal coordinates. (?coord=lat,lon)</td>
+            </tr>
+            <tr>
+                <td><b>R</b> (radius)</td>
+                <td>Define a specific radius in kilometers (if radius is not defined it will default to 5km). (?coord=latitude,longitude&r=radius)</td>
+            </tr>
         </table>
 
         <h3>Examples</h3>
