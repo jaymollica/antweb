@@ -127,8 +127,6 @@
           $specimen['images'] = $this->getImages($code);
         }
 
-        //  return json_encode($specimen);
-
       }
       else {
         $specimen = 'No records found.';

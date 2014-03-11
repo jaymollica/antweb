@@ -328,10 +328,17 @@
     public function getRank($rank) {
 
       if(in_array($rank, $this->validArguments)) {
-        $sql = $this->_db->prepare("SELECT distinct($rank) FROM darwin_core_2 ORDER BY $rank ASC");
+
+        if($rank == 'species') {$rank = "specificEpithet"; }
+
+        $sql = "SELECT distinct($rank) FROM darwin_core_2 ORDER BY $rank ASC";
+
+        $sql = $this->_db->prepare($sql);
         $sql->execute();
         if($sql->rowCount() > 0) {
           $ranks = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+          $ranks = $this->utf8Scrub($ranks);
 
           return json_encode($ranks);
 
@@ -339,32 +346,48 @@
       }
     }
 
-    public function getCoord($lat,$lon,$r) {
+    public function getCoord($lat,$lon,$r,$limit=FALSE,$offset=FALSE) {
 
       if( (!is_numeric($r)) || (!is_numeric($lat)) || (!is_numeric($lon)) ) {
         exit;
       }
 
-      $sql = $this->_db->prepare(" SELECT
-                     occurrenceId,
-                     catalogNumber,
-                     family,
-                     subfamily,
-                     genus,
-                     specificEpithet,
-                     scientific_name,
-                     typeStatus,
-                     stateProvince,
-                     country,
-                     decimalLatitude,
-                     decimalLongitude,
-                     dateIdentified,
-                     habitat,
-                     minimumElevationInMeters,
-                     ( 6371 * acos( cos( radians(:lat) ) * cos( radians( decimalLatitude ) ) * cos( radians( decimalLongitude ) - radians(:lon) ) + sin( radians(:lat) ) * sin( radians( decimalLatitude ) ) ) ) AS distance
-                     FROM darwin_core_2 HAVING distance < $r ORDER BY distance");
+      $sql = "SELECT
+             occurrenceId,
+             catalogNumber,
+             family,
+             subfamily,
+             genus,
+             specificEpithet,
+             scientific_name,
+             typeStatus,
+             stateProvince,
+             country,
+             decimalLatitude,
+             decimalLongitude,
+             dateIdentified,
+             habitat,
+             minimumElevationInMeters,
+             ( 6371 * acos( cos( radians(:lat) ) * cos( radians( decimalLatitude ) ) * cos( radians( decimalLongitude ) - radians(:lon) ) + sin( radians(:lat) ) * sin( radians( decimalLatitude ) ) ) ) AS distance
+             FROM darwin_core_2 HAVING distance < $r ORDER BY distance";
+
+      if(is_numeric($limit)) {
+        $sqlLim = $sql;
+        $sqlLim .= " LIMIT $limit";
+
+        if(is_numeric($offset)) {
+          $sqlLim .= " OFFSET $offset";
+        }
+
+      }
+
+      $sql = $this->_db->prepare($sql);
+      $sqlLim = $this->_db->prepare($sqlLim);
 
       $sql->execute(array(':lat' => $lat, ':lon' => $lon));
+      $sqlLim->execute(array(':lat' => $lat, ':lon' => $lon));
+
+      $totalRex = $sql->rowCount();
 
       if($sql->rowCount() > 0) {
 
@@ -404,7 +427,59 @@
 
       }
 
-      return json_encode($specimens);
+      $results['count'] = $totalRex;
+      $results['origin'] = $lat . ',' . $lon;
+      $results['radius'] = $r;
+      if(is_numeric($limit)) { $results['limit'] = $limit; }
+      if(is_numeric($offset)) { $results['offset'] = $offset; }
+      if(!empty($specimens)) { $results['specimens'] = $specimens; }
+
+      $results = $this->utf8Scrub($results);
+
+      return json_encode($results);
+
+    }
+
+    public function getImagesAddedAfter($days,$type) {
+
+      $since = date('Y-m-d', strtotime("-$days days"));
+
+      if($type) {
+        $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=? AND shot_type=? ORDER BY shot_number ASC");
+        $sql->execute(array($since,$type));
+      }
+      else {
+        $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=? ORDER BY shot_number ASC");
+        $sql->execute(array($since));
+      }
+
+      if($sql->rowCount() > 0) {
+        $imgs = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach($imgs AS $img) {
+
+          $code = $img['image_of_id'];
+          $type = $img['shot_type'];
+
+          $shot_number = $img['shot_number'];
+
+          $images[$code][$shot_number]['upload_date'] = $img['upload_date'];
+
+          $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_high.jpg';
+          $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_low.jpg';
+          $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_med.jpg';
+          $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_thumbview.jpg';
+
+        }
+
+      }
+      else {
+        $images = NULL;
+      }
+
+      $images = $this->utf8Scrub($images);
+
+      return json_encode($images);
 
     }
 

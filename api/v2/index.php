@@ -11,22 +11,29 @@ if($_GET) {
   $antweb = new antweb($pdo);
 
   if(isset($rank)) {
-    $results = $antweb->getRank($rank);
+
+    $results = $antweb->getRank($rank,$limit,$offset);
   }
-  if(isset($coord)) {
+  elseif(isset($coord)) {
     $coord = $_REQUEST['coord'];
     $parts = explode(',',$coord);
 
     $lat = $parts[0];
     $lon = $parts[1];
 
-    $r = 5;
+    if(!isset($r)) { $r = 5; }
 
-    if(isset($_REQUEST['r'])) {
-      $r = $_REQUEST['r'];
-    }
+    if(!isset($limit)) { $limit = FALSE; }
+    if(!isset($offset)) {$offset = FALSE; }
 
-    $results = $antweb->getCoord($lat,$lon,$r);
+    $results = $antweb->getCoord($lat,$lon,$r,$limit,$offset);
+
+  }
+  elseif(isset($since)) {
+
+    $days = $since;
+
+    $specimens = $antweb->getImagesAddedAfter($days,$img_type);
 
   }
   else {
