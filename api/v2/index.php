@@ -32,8 +32,9 @@ if($_GET) {
   elseif(isset($since)) {
 
     $days = $since;
+    if(!isset($img_type)) { $img_type = FALSE; }
 
-    $specimens = $antweb->getImagesAddedAfter($days,$img_type);
+    $results = $antweb->getImagesAddedAfter($days,$img_type);
 
   }
   else {

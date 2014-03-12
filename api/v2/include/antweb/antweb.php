@@ -10,6 +10,7 @@
       // a list of valid arguments to check any incoming GETs against
       $this->validArguments = array(
         'occurrenceId', //occurrenceId
+        'catalogNumber',
         'subfamily',
         'genus',
         'species', //specificEpithet
@@ -410,7 +411,7 @@
 
           }
 
-          $url = 'http://antweb.org/api/v2/?occurrenceId=' . $s['occurrenceId'];
+          $url = 'http://antweb.org/api/v2/?catalogNumber=' . $s['catalogNumber'];
           $s = array('url' => $url) + $s;
           unset($s['occurrenceId']);
 
@@ -440,9 +441,15 @@
 
     }
 
-    public function getImagesAddedAfter($days,$type) {
+    public function getImagesAddedAfter($days,$img_type=FALSE) {
 
       $since = date('Y-m-d', strtotime("-$days days"));
+
+      $allowed_types = array('h','d','p','l');
+
+      if(in_array($img_type, $allowed_types)) {
+        $type = $img_type;
+      }
 
       if($type) {
         $sql = $this->_db->prepare("SELECT * FROM image WHERE upload_date>=? AND shot_type=? ORDER BY shot_number ASC");
@@ -463,6 +470,8 @@
 
           $shot_number = $img['shot_number'];
 
+
+          $images[$code]['url'] = 'http://www.antweb.org/api/v2/?catalogNumber=' . $code;
           $images[$code][$shot_number]['upload_date'] = $img['upload_date'];
 
           $images[$code][$shot_number]['shot_types'][$type]['img'][] = 'http://www.antweb.org/images/' . $code . '/' . $code . '_' . $img['shot_type'] . '_' . $img['shot_number'] . '_high.jpg';
