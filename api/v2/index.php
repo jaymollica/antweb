@@ -22,11 +22,12 @@ if($_GET) {
     $lon = $parts[1];
 
     if(!isset($r)) { $r = 5; }
+    if(!isset($distinct)) {$distinct = FALSE; }
 
     if(!isset($limit)) { $limit = FALSE; }
     if(!isset($offset)) {$offset = FALSE; }
 
-    $results = $antweb->getCoord($lat,$lon,$r,$limit,$offset);
+    $results = $antweb->getCoord($lat,$lon,$r,$limit,$offset,$distinct);
 
   }
   elseif(isset($since)) {

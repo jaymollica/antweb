@@ -152,8 +152,6 @@
       $args = $sql_const['args'];
       if(isset($sql_const['limits'])) $limits = $sql_const['limits'];
 
-
-
       $sql = "SELECT occurrenceId,
                      catalogNumber,
                      family,
@@ -326,7 +324,7 @@
     }
 
     //returns an array of distinct names of given rank
-    public function getRank($rank) {
+    public function getRank($rank,$lat=FALSE,$lon=FALSE,$r=FALSE) {
 
       if(in_array($rank, $this->validArguments)) {
 
@@ -347,7 +345,13 @@
       }
     }
 
-    public function getCoord($lat,$lon,$r,$limit=FALSE,$offset=FALSE) {
+    public function getCoord($lat,$lon,$r,$limit=FALSE,$offset=FALSE,$distinct=FALSE) {
+
+      $valid_ranks = array(
+        'species',
+        'genus',
+        'subfamily',
+      );
 
       if( (!is_numeric($r)) || (!is_numeric($lat)) || (!is_numeric($lon)) ) {
         exit;
@@ -379,7 +383,6 @@
         if(is_numeric($offset)) {
           $sqlLim .= " OFFSET $offset";
         }
-
       }
 
       $sql = $this->_db->prepare($sql);
@@ -393,6 +396,34 @@
       if($sql->rowCount() > 0) {
 
         $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+        if($distinct) {
+          if(in_array($distinct, $valid_ranks)) {
+            if($distinct == 'species') { $distinct = 'specificEpithet'; }
+            $distinct_specimen = array();
+            $distinct_sn = array();
+            foreach($specimens AS $s) {
+              if(!in_array($s[$distinct], $distinct_specimen)) {
+                array_push($distinct_specimen, $s[$distinct]);
+                if($distinct == 'specificEpithet') {
+                  array_push($distinct_sn,$s['scientific_name']);
+                }
+                else {
+                  array_push($distinct_sn,$s[$distinct]);
+                }
+              }
+            }
+          }
+
+          if($distinct == 'specificEpithet') { $distinct = 'species'; }
+
+          $results['origin'] = $lat . ',' . $lon;
+          $results['radius'] = $r;
+          $results['count'] = count($distinct_sn);
+          $results['distinct_' . $distinct] = $distinct_sn;
+
+          return json_encode($results);
+        }
 
         foreach($specimens AS &$s) {
           if(!is_null($s['decimalLatitude'])) {
