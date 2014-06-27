@@ -5,14 +5,13 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/api/v2/include/header.php');
 
 if($_GET) {
 
+  $antweb = new antweb($pdo);
+
   $arguments = $_GET;
   extract($_GET);
 
-  $antweb = new antweb($pdo);
-
   if(isset($rank)) {
-
-    $results = $antweb->getRank($rank,$limit,$offset);
+    $results = $antweb->getRank($arguments);
   }
   elseif(isset($coord)) {
     $coord = $_REQUEST['coord'];

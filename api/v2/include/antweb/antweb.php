@@ -20,12 +20,26 @@
         'max_date',  //dateIdentified
         'min_elevation', //minimumElevationInMeters
         'max_elevation',  //minimumElevationInMeters
+        'country',
         'state_province', //stateProvince
         'habitat',
         'georeferenced',
         'limit',
-        'offset'
+        'offset',
+        'distinct',
+        'rank'
       );
+
+      //a list of valid ranks to query on
+      $this->valid_ranks = array(
+        'species',
+        'genus',
+        'subfamily',
+      );
+
+      //list of valid characters
+      $this->valid_chars = array('-','_',',','.',':');
+
     }
 
     public function getColumnNames($table) {
@@ -41,6 +55,19 @@
       }
 
       return $fields;
+
+    }
+
+    public function validCharacters($args) {
+
+      //validate args for allowed characters
+      foreach($args AS &$arg) {
+        if(!ctype_alnum(str_replace($this->valid_chars,'',$arg))) {
+          $arg = 'invalid';
+        }
+      }
+
+      return $args;
 
     }
 
@@ -130,6 +157,110 @@
 
     }
 
+    public function constructParams($params) {
+
+      $args = $params['args'];
+      if(isset($params['limits'])) {
+        $limits = $params['limits'];
+      }
+
+      $sql = '';
+      foreach($args AS $key => $val) {
+        if(is_array($val)) {
+          foreach($val AS $k => $v) {
+            $params[$k] = $v;
+          }
+        }
+        else {
+          $params[$key] = $val;
+        }
+      }
+
+      foreach($args AS $key => $val) {
+
+        if($key == 'min_date') {
+          $mind = 'dateIdentified';
+          $sql .= sprintf(' AND `%s` >= :%s',$mind,$key);
+        }
+        elseif($key == 'max_date') {
+          $maxd = 'dateIdentified';
+          $sql .= sprintf(' AND `%s` <= :%s',$maxd,$key);
+        }
+        elseif($key == 'min_elevation') {
+          $mine = 'minimumElevationInMeters';
+          $sql .= sprintf(' AND `%s` >= :%s',$mine,$key);
+        }
+        elseif($key == 'max_elevation') {
+          $maxe = 'minimumElevationInMeters';
+          $sql .= sprintf(' AND `%s` <= :%s',$maxe,$key);
+        }
+        elseif($key == 'xcoord') {
+          $sql .= ' AND decimalLatitude BETWEEN';
+          $i = 0;
+          foreach($val AS $coord => $val) {
+            if($i == 0) {
+              $sql .= sprintf(' :%s',$coord);
+              $i++;
+            }
+            else {
+              $sql .= sprintf(' AND :%s',$coord);
+              $i = 0;
+            }
+          }
+        }
+        elseif($key == 'ycoord') {
+          $sql .= ' AND decimalLongitude BETWEEN';
+          $i = 0;
+          foreach($val AS $coord => $val) {
+            if($i == 0) {
+              $sql .= sprintf(' :%s',$coord);
+              $i++;
+            }
+            else {
+              $sql .= sprintf(' AND :%s',$coord);
+              $i = 0;
+            }
+          }
+        }
+        elseif($key == 'habitat') {
+          $sql .= ' AND `habitat` LIKE :habitat';
+        }
+        elseif($key == 'country') {
+          $sql .= ' AND `country` LIKE :country';
+        }
+        elseif($key == 'typeStatus') {
+          $sql .= ' AND `typeStatus` LIKE :typeStatus';
+        }
+        else {
+          $sql .= sprintf(' AND `%s` = :%s',$key,$key);
+        }
+      }
+
+      if(isset($limits['georeferenced']) && $limits['georeferenced'] == 1) {
+        $sql .= " AND decimalLatitude IS NOT NULL";
+      }
+
+      $sqlLim ='';
+      if(isset($limits) && !empty($limits)) {
+        if(isset($limits['limit'])) {
+
+          $limit = $limits['limit'];
+          $sqlLim .= " LIMIT $limit";
+          if(isset($limits['offset'])) {
+            $offset = $limits['offset'];
+            $sqlLim .= " OFFSET $offset";
+          }
+        }
+      }
+
+      $paramStr['limit'] = $sqlLim;
+      $paramStr['nolimit'] = $sql;
+      $paramStr['params'] = $params;
+
+      return $paramStr;
+
+    }
+
     public function getSpecimens($arguments) {
 
       //validate arg for available field names
@@ -140,13 +271,7 @@
         }
       }
 
-      //validate args for allowed characters
-      foreach($args AS &$arg) {
-        $aValid = array('-','_',',','.',':');
-        if(!ctype_alnum(str_replace($aValid,'',$arg))) {
-          $arg = 'invalid';
-        }
-      }
+      $args = $this->validCharacters($args);
 
       $sql_const = $this->prepareArguments($args);
       $args = $sql_const['args'];
@@ -169,7 +294,6 @@
                      minimumElevationInMeters
 
                      FROM darwin_core_2 WHERE 1";
-
 
       $params = array();
       foreach($args AS $key => $val) {
@@ -324,34 +448,75 @@
     }
 
     //returns an array of distinct names of given rank
-    public function getRank($rank,$lat=FALSE,$lon=FALSE,$r=FALSE) {
+    public function getRank($arguments) {
+
+      //validate arg for available field names
+      $args = array();
+      foreach($arguments AS $arg => $val) {
+        if(in_array($arg,$this->validArguments)) {
+          $args[$arg] = $val;
+        }
+      }
+
+
+      $rank = $args['rank'];
+      unset($args['rank']);
+
+      $sql_const = $this->prepareArguments($args);
+
+      $paramStrs = $this->constructParams($sql_const);
 
       if(in_array($rank, $this->validArguments)) {
 
         if($rank == 'species') {$rank = "specificEpithet"; }
 
-        $sql = "SELECT distinct($rank) FROM darwin_core_2 ORDER BY $rank ASC";
+        $sql = "SELECT distinct($rank) FROM darwin_core_2 WHERE 1" . $paramStrs['nolimit'] . " ORDER BY $rank ASC ";
+        $noLim = $sql;
+        $sql = $sql . $paramStrs['limit'];  //add offset and limits
 
         $sql = $this->_db->prepare($sql);
+        $noLim = $this->_db->prepare($noLim);
+
+        foreach ($paramStrs['params']['args'] as $key => $val) {
+
+          // Using bindValue because bindParam binds a reference, which is
+          // only evaluated at the point of execute
+          $sql->bindValue(':'.$key, $val);
+          $noLim->bindValue(':'.$key, $val);
+
+        }
+
         $sql->execute();
+        $noLim->execute();
+
         if($sql->rowCount() > 0) {
           $ranks = $sql->fetchAll(PDO::FETCH_ASSOC);
 
           $ranks = $this->utf8Scrub($ranks);
 
-          return json_encode($ranks);
+         // return json_encode($ranks);
 
         }
+        else {
+          $specimens = array('empty_set' => 'No records found.');
+        }
+
+       // $results['count'] = $totalRex;
+        $results['count'] = $noLim->rowCount();
+
+        foreach($args AS $key => $val) {
+          $results[$key] = $val;
+        }
+
+        $results['rank'] = $rank;
+        $results['specimens'] = $this->utf8Scrub($ranks);
+
+        return json_encode($results);
+
       }
     }
 
     public function getCoord($lat,$lon,$r,$limit=FALSE,$offset=FALSE,$distinct=FALSE) {
-
-      $valid_ranks = array(
-        'species',
-        'genus',
-        'subfamily',
-      );
 
       if( (!is_numeric($r)) || (!is_numeric($lat)) || (!is_numeric($lon)) ) {
         exit;
@@ -398,7 +563,7 @@
         $specimens = $sql->fetchAll(PDO::FETCH_ASSOC);
 
         if($distinct) {
-          if(in_array($distinct, $valid_ranks)) {
+          if(in_array($distinct, $this->valid_ranks)) {
             if($distinct == 'species') { $distinct = 'specificEpithet'; }
             $distinct_specimen = array();
             $distinct_sn = array();
