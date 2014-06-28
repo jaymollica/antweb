@@ -88,6 +88,30 @@
                 <td><b>Rank</b></td>
                 <td>Return a list of unique names for a given rank. (?rank=genus)</td>
             </tr>
+            <tr>
+                <td><b>Habitat</b></td>
+                <td>This uses a wildcard so a query for ?habitat=sand will return any habitat containing the word sand (e.g. sandstone)</td>
+            </tr>
+            <tr>
+                <td><b>Country</b></td>
+                <td>This uses a wildcard so a query for ?country=land will return any country containing the word land (e.g. England, Ireland etc)</td>
+            </tr>
+            <tr>
+                <td><b>Min Elevation</b></td>
+                <td>This is measured in meters.  Query on specimen found at or above a specific elevation (?min_elevation=1200)</td>
+            </tr>
+            <tr>
+                <td><b>Max Elevation</b></td>
+                <td>This is measured in meters.  Query on specimen found at or below a specific elevation (?max_elevation=1200)</td>
+            </tr>
+           <tr>
+                <td><b>Limit</b></td>
+                <td>Limit the number of specimen returned on large requests (?limit=100)</td>
+            </tr>
+            <tr>
+                <td><b>Offset</b></td>
+                <td>Used to paginate large requests when paired with the limit argument (this would return records 301-400: ?limit=100&offset=300)</td>
+            </tr>
         </table>
 
         <h3>Decimal Coordinate</h3>
