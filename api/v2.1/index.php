@@ -1,7 +1,7 @@
 <?php
 
 header('Content-type: application/json');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/api/v2/include/header.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/api/v2.1/include/header.php');
 
 if($_GET) {
 

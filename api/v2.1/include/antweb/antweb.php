@@ -27,7 +27,11 @@
         'limit',
         'offset',
         'distinct',
-        'rank'
+        'rank',
+        'fossil',
+        'taxon_status',
+        'date_collected_min',
+        'date_collected_max'
       );
 
       //a list of valid ranks to query on
@@ -38,7 +42,7 @@
       );
 
       //list of valid characters
-      $this->valid_chars = array('-','_',',','.',':');
+      $this->valid_chars = array('-','_',',','.',':','(',')');
 
     }
 
@@ -71,17 +75,12 @@
 
     }
 
-    public function validateDate($date, $format = 'Y-m-d H:i:s') {
-        $d = DateTime::createFromFormat($format, $date);
-        return $d && $d->format($format) == $date;
-    }
-
     //some of the characters coming out of the db are not utf8 encoded and throwing warnings in the log
     public function utf8Scrub($array) {
 
       array_walk_recursive(
               $array, function (&$value) {
-                  $value = trim(preg_replace('/ +/', ' ', preg_replace('/[^A-Za-z0-9_.\/,:?=-]/',' ', urldecode(html_entity_decode(strip_tags($value))))));
+                  $value = trim(preg_replace('/ +/', ' ', preg_replace('/[^A-Za-z0-9_.\/,:?=-]()/',' ', urldecode(html_entity_decode(strip_tags($value))))));
                   $value = htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
               }
       );
@@ -185,6 +184,14 @@
         elseif($key == 'max_date') {
           $maxd = 'dateIdentified';
           $sql .= sprintf(' AND `%s` <= :%s',$maxd,$key);
+        }
+        elseif($key == 'date_collected_min') {
+          $dcmin = 'datecollected';
+          $sql .= sprintf(' AND `%s` >= :%s',$dcmin,$key);
+        }
+        elseif($key == 'date_collected_max') {
+          $dcmax = 'datecollected';
+          $sql .= sprintf(' AND `%s` <= :%s',$dcmax,$key);
         }
         elseif($key == 'min_elevation') {
           $mine = 'minimumElevationInMeters';
@@ -291,9 +298,12 @@
                      decimalLongitude,
                      dateIdentified,
                      habitat,
-                     minimumElevationInMeters
+                     minimumElevationInMeters,
+                     datecollected,
+                     fossil,
+                     image_count
 
-                     FROM darwin_core_2 WHERE 1";
+                     FROM darwin_core_3 WHERE 1";
 
       $params = array();
       foreach($args AS $key => $val) {
@@ -315,6 +325,14 @@
         elseif($key == 'max_date') {
           $maxd = 'dateIdentified';
           $sql .= sprintf(' AND `%s` <= :%s',$maxd,$key);
+        }
+        elseif($key == 'date_collected_min') {
+          $dcmin = 'datecollected';
+          $sql .= sprintf(' AND `%s` >= :%s',$dcmin,$key);
+        }
+        elseif($key == 'date_collected_max') {
+          $dcmax = 'datecollected';
+          $sql .= sprintf(' AND `%s` <= :%s',$dcmax,$key);
         }
         elseif($key == 'min_elevation') {
           $mine = 'minimumElevationInMeters';
@@ -388,7 +406,6 @@
         // only evaluated at the point of execute
         $stmt->bindValue(':'.$key, $val);
         $stmtLim->bindValue(':'.$key, $val);
-
       }
 
       $stmt->execute();
@@ -458,7 +475,6 @@
         }
       }
 
-
       $rank = $args['rank'];
       unset($args['rank']);
 
@@ -470,7 +486,7 @@
 
         if($rank == 'species') {$rank = "specificEpithet"; }
 
-        $sql = "SELECT distinct($rank) FROM darwin_core_2 WHERE 1" . $paramStrs['nolimit'] . " ORDER BY $rank ASC ";
+        $sql = "SELECT distinct($rank) FROM darwin_core_3 WHERE 1" . $paramStrs['nolimit'] . " ORDER BY $rank ASC ";
         $noLim = $sql;
         $sql = $sql . $paramStrs['limit'];  //add offset and limits
 
@@ -539,7 +555,7 @@
              habitat,
              minimumElevationInMeters,
              ( 6371 * acos( cos( radians(:lat) ) * cos( radians( decimalLatitude ) ) * cos( radians( decimalLongitude ) - radians(:lon) ) + sin( radians(:lat) ) * sin( radians( decimalLatitude ) ) ) ) AS distance
-             FROM darwin_core_2 HAVING distance < $r ORDER BY distance";
+             FROM darwin_core_3 HAVING distance < $r ORDER BY distance";
 
       if(is_numeric($limit)) {
         $sqlLim = $sql;
