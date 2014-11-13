@@ -23,9 +23,25 @@ body {
   stroke-width: 1.5px;
 }
 
+p {
+  font-size:20px;
+}
+
 </style>
 <body>
-<p>This chart illustrates new species from Madagascar added to antweb.org from 1970-2010.</p>
+<p>This chart illustrates new species from Madagascar added to antweb.org collected from 1970-2010.</p>
+<div id="chart">
+</div>
+<div>&nbsp;</div>
+<div class="raw-data">
+<p>Raw Data</p>
+<p>
+<a href="data.json">Count of new species per year 1970-2010</a>
+</p>
+<p>
+<a href="specimen.json">All data used for this chart (warning 26.9 MB!)</a>
+</p>
+</div>
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
 
@@ -53,7 +69,7 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.year); })
     .y(function(d) { return y(d.count); });
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -81,7 +97,7 @@ d3.json("data.json", function(error, data) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("New Species");
+      .text("# New Species");
 
   svg.append("path")
       .datum(data)
@@ -90,3 +106,5 @@ d3.json("data.json", function(error, data) {
 });
 
 </script>
+</body>
+</html>
