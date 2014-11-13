@@ -82,5 +82,5 @@ publish
 api/include/header.php
 api/v1/include/header.php
 api/v2/include/header.php
-api/demo/
-demo/
+api/demo/map*
+demo/map*
