@@ -1,0 +1,1333 @@
+{
+ "name": "ants",
+ "children": [{
+    "name": "Myrmicinae",
+    "children": [
+        {
+            "name": "Acanthognathus",
+            "size": 20
+        },
+        {
+            "name": "Acanthomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Acromyrmex",
+            "size": 20
+        },
+        {
+            "name": "Adelomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Adlerzia",
+            "size": 20
+        },
+        {
+            "name": "Allomerus",
+            "size": 20
+        },
+        {
+            "name": "Ancyridris",
+            "size": 20
+        },
+        {
+            "name": "Anergates",
+            "size": 20
+        },
+        {
+            "name": "Anillomyrma",
+            "size": 20
+        },
+        {
+            "name": "Anisopheidole",
+            "size": 20
+        },
+        {
+            "name": "Ankylomyrma",
+            "size": 20
+        },
+        {
+            "name": "Aphaenogaster",
+            "size": 20
+        },
+        {
+            "name": "Apterostigma",
+            "size": 20
+        },
+        {
+            "name": "Atopomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Atta",
+            "size": 20
+        },
+        {
+            "name": "Austromorium",
+            "size": 20
+        },
+        {
+            "name": "Baracidris",
+            "size": 20
+        },
+        {
+            "name": "Bariamyrma",
+            "size": 20
+        },
+        {
+            "name": "Basiceros",
+            "size": 20
+        },
+        {
+            "name": "Belonopelta",
+            "size": 20
+        },
+        {
+            "name": "Blepharidatta",
+            "size": 20
+        },
+        {
+            "name": "Bondroitia",
+            "size": 20
+        },
+        {
+            "name": "Calyptomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Cardiocondyla",
+            "size": 20
+        },
+        {
+            "name": "Carebara",
+            "size": 20
+        },
+        {
+            "name": "Carebarella",
+            "size": 20
+        },
+        {
+            "name": "Cataulacus",
+            "size": 20
+        },
+        {
+            "name": "Cephalotes",
+            "size": 20
+        },
+        {
+            "name": "Chalepoxenus",
+            "size": 20
+        },
+        {
+            "name": "Chimaeridris",
+            "size": 20
+        },
+        {
+            "name": "Colobostruma",
+            "size": 20
+        },
+        {
+            "name": "Crematogaster",
+            "size": 20
+        },
+        {
+            "name": "Cryptomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Cyphoidris",
+            "size": 20
+        },
+        {
+            "name": "Cyphomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Dacatria",
+            "size": 20
+        },
+        {
+            "name": "Dacetinops",
+            "size": 20
+        },
+        {
+            "name": "Daceton",
+            "size": 20
+        },
+        {
+            "name": "Decamorium",
+            "size": 20
+        },
+        {
+            "name": "Dicroaspis",
+            "size": 20
+        },
+        {
+            "name": "Dilobocondyla",
+            "size": 20
+        },
+        {
+            "name": "Diplomorium",
+            "size": 20
+        },
+        {
+            "name": "Dolopomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Epopostruma",
+            "size": 20
+        },
+        {
+            "name": "Eurhopalothrix",
+            "size": 20
+        },
+        {
+            "name": "Eutetramorium",
+            "size": 20
+        },
+        {
+            "name": "Formicoxenus",
+            "size": 20
+        },
+        {
+            "name": "Formosimyrma",
+            "size": 20
+        },
+        {
+            "name": "Gaoligongidris",
+            "size": 20
+        },
+        {
+            "name": "Gauromyrmex",
+            "size": 20
+        },
+        {
+            "name": "Gesomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Goniomma",
+            "size": 20
+        },
+        {
+            "name": "Harpagoxenus",
+            "size": 20
+        },
+        {
+            "name": "Huberia",
+            "size": 20
+        },
+        {
+            "name": "Hylomyrma",
+            "size": 20
+        },
+        {
+            "name": "Indomyrma",
+            "size": 20
+        },
+        {
+            "name": "Ishakidris",
+            "size": 20
+        },
+        {
+            "name": "Kalathomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Kartidris",
+            "size": 20
+        },
+        {
+            "name": "Lachnomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Lasiomyrma",
+            "size": 20
+        },
+        {
+            "name": "Lenomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Leptothorax",
+            "size": 20
+        },
+        {
+            "name": "Liomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Lophomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Lordomyrma",
+            "size": 20
+        },
+        {
+            "name": "Machomyrma",
+            "size": 20
+        },
+        {
+            "name": "Manica",
+            "size": 20
+        },
+        {
+            "name": "Mayriella",
+            "size": 20
+        },
+        {
+            "name": "Megalomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Melissotarsus",
+            "size": 20
+        },
+        {
+            "name": "Meranoplus",
+            "size": 20
+        },
+        {
+            "name": "Mesostruma",
+            "size": 20
+        },
+        {
+            "name": "Messor",
+            "size": 20
+        },
+        {
+            "name": "Metapone",
+            "size": 20
+        },
+        {
+            "name": "Microdaceton",
+            "size": 20
+        },
+        {
+            "name": "Monomorium",
+            "size": 20
+        },
+        {
+            "name": "Mycetagroicus",
+            "size": 20
+        },
+        {
+            "name": "Mycetarotes",
+            "size": 20
+        },
+        {
+            "name": "Mycetophylax",
+            "size": 20
+        },
+        {
+            "name": "Mycetosoritis",
+            "size": 20
+        },
+        {
+            "name": "Mycocepurus",
+            "size": 20
+        },
+        {
+            "name": "Myrmecina",
+            "size": 20
+        },
+        {
+            "name": "Myrmica",
+            "size": 20
+        },
+        {
+            "name": "Myrmicaria",
+            "size": 20
+        },
+        {
+            "name": "Myrmicocrypta",
+            "size": 20
+        },
+        {
+            "name": "Myrmoxenus",
+            "size": 20
+        },
+        {
+            "name": "Nesomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Ochetomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Octostruma",
+            "size": 20
+        },
+        {
+            "name": "Ocymyrmex",
+            "size": 20
+        },
+        {
+            "name": "Orectognathus",
+            "size": 20
+        },
+        {
+            "name": "Oxyepoecus",
+            "size": 20
+        },
+        {
+            "name": "Oxyopomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Paramycetophylax",
+            "size": 20
+        },
+        {
+            "name": "Paratopula",
+            "size": 20
+        },
+        {
+            "name": "Perissomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Peronomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Phalacromyrmex",
+            "size": 20
+        },
+        {
+            "name": "Pheidole",
+            "size": 20
+        },
+        {
+            "name": "Pheidologeton",
+            "size": 20
+        },
+        {
+            "name": "Pilotrochus",
+            "size": 20
+        },
+        {
+            "name": "Podomyrma",
+            "size": 20
+        },
+        {
+            "name": "Poecilomyrma",
+            "size": 20
+        },
+        {
+            "name": "Pogonomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Pristomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Proatta",
+            "size": 20
+        },
+        {
+            "name": "Procryptocerus",
+            "size": 20
+        },
+        {
+            "name": "Propodilobus",
+            "size": 20
+        },
+        {
+            "name": "Protalaridris",
+            "size": 20
+        },
+        {
+            "name": "Protomognathus",
+            "size": 20
+        },
+        {
+            "name": "Pseudoatta",
+            "size": 20
+        },
+        {
+            "name": "Recurvidris",
+            "size": 20
+        },
+        {
+            "name": "Rhopalomastix",
+            "size": 20
+        },
+        {
+            "name": "Rhopalothrix",
+            "size": 20
+        },
+        {
+            "name": "Rhoptromyrmex",
+            "size": 20
+        },
+        {
+            "name": "Rogeria",
+            "size": 20
+        },
+        {
+            "name": "Romblonella",
+            "size": 20
+        },
+        {
+            "name": "Rostromyrmex",
+            "size": 20
+        },
+        {
+            "name": "Rotastruma",
+            "size": 20
+        },
+        {
+            "name": "Secostruma",
+            "size": 20
+        },
+        {
+            "name": "Sericomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Solenopsis",
+            "size": 20
+        },
+        {
+            "name": "Stegomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Stenamma",
+            "size": 20
+        },
+        {
+            "name": "Stereomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Strongylognathus",
+            "size": 20
+        },
+        {
+            "name": "Strumigenys",
+            "size": 20
+        },
+        {
+            "name": "Talaridris",
+            "size": 20
+        },
+        {
+            "name": "Teleutomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Temnothorax",
+            "size": 20
+        },
+        {
+            "name": "Terataner",
+            "size": 20
+        },
+        {
+            "name": "Tetheamyrma",
+            "size": 20
+        },
+        {
+            "name": "Tetramorium",
+            "size": 20
+        },
+        {
+            "name": "Trachymyrmex",
+            "size": 20
+        },
+        {
+            "name": "Tranopelta",
+            "size": 20
+        },
+        {
+            "name": "Tricytarus",
+            "size": 20
+        },
+        {
+            "name": "Tropidomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Tyrannomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Vollenhovia",
+            "size": 20
+        },
+        {
+            "name": "Vombisidris",
+            "size": 20
+        },
+        {
+            "name": "Wasmannia",
+            "size": 20
+        },
+        {
+            "name": "Xenomyrmex",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Heteroponerinae",
+    "children": [
+        {
+            "name": "Acanthoponera",
+            "size": 20
+        },
+        {
+            "name": "Aulacopone",
+            "size": 20
+        },
+        {
+            "name": "Heteroponera",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Cerapachyinae",
+    "children": [
+        {
+            "name": "Acanthostichus",
+            "size": 20
+        },
+        {
+            "name": "Cerapachys",
+            "size": 20
+        },
+        {
+            "name": "Cylindromyrmex",
+            "size": 20
+        },
+        {
+            "name": "Simopone",
+            "size": 20
+        },
+        {
+            "name": "Sphinctomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Tanipone",
+            "size": 20
+        },
+        {
+            "name": "Vicinopone",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Formicinae",
+    "children": [
+        {
+            "name": "Acropyga",
+            "size": 20
+        },
+        {
+            "name": "Agraulomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Alloformica",
+            "size": 20
+        },
+        {
+            "name": "Anoplolepis",
+            "size": 20
+        },
+        {
+            "name": "Aphomomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Bajcaridris",
+            "size": 20
+        },
+        {
+            "name": "Brachymyrmex",
+            "size": 20
+        },
+        {
+            "name": "Bregmatomyrma",
+            "size": 20
+        },
+        {
+            "name": "Calomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Camponotus",
+            "size": 20
+        },
+        {
+            "name": "Cataglyphis",
+            "size": 20
+        },
+        {
+            "name": "Cladomyrma",
+            "size": 20
+        },
+        {
+            "name": "Echinopla",
+            "size": 20
+        },
+        {
+            "name": "Euprenolepis",
+            "size": 20
+        },
+        {
+            "name": "Forelophilus",
+            "size": 20
+        },
+        {
+            "name": "Formica",
+            "size": 20
+        },
+        {
+            "name": "Gigantiops",
+            "size": 20
+        },
+        {
+            "name": "Iberoformica",
+            "size": 20
+        },
+        {
+            "name": "Lasiophanes",
+            "size": 20
+        },
+        {
+            "name": "Lasius",
+            "size": 20
+        },
+        {
+            "name": "Lepisiota",
+            "size": 20
+        },
+        {
+            "name": "Melophorus",
+            "size": 20
+        },
+        {
+            "name": "Myrmecocystus",
+            "size": 20
+        },
+        {
+            "name": "Myrmecorhynchus",
+            "size": 20
+        },
+        {
+            "name": "Myrmelachista",
+            "size": 20
+        },
+        {
+            "name": "Myrmoteras",
+            "size": 20
+        },
+        {
+            "name": "Notoncus",
+            "size": 20
+        },
+        {
+            "name": "Notostigma",
+            "size": 20
+        },
+        {
+            "name": "Nylanderia",
+            "size": 20
+        },
+        {
+            "name": "Oecophylla",
+            "size": 20
+        },
+        {
+            "name": "Opisthopsis",
+            "size": 20
+        },
+        {
+            "name": "Overbeckia",
+            "size": 20
+        },
+        {
+            "name": "Paraparatrechina",
+            "size": 20
+        },
+        {
+            "name": "Paratrechina",
+            "size": 20
+        },
+        {
+            "name": "Petalomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Phasmomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Plagiolepis",
+            "size": 20
+        },
+        {
+            "name": "Polyergus",
+            "size": 20
+        },
+        {
+            "name": "Polyrhachis",
+            "size": 20
+        },
+        {
+            "name": "Prenolepis",
+            "size": 20
+        },
+        {
+            "name": "Proformica",
+            "size": 20
+        },
+        {
+            "name": "Prolasius",
+            "size": 20
+        },
+        {
+            "name": "Pseudolasius",
+            "size": 20
+        },
+        {
+            "name": "Pseudonotoncus",
+            "size": 20
+        },
+        {
+            "name": "Rossomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Santschiella",
+            "size": 20
+        },
+        {
+            "name": "Stigmacros",
+            "size": 20
+        },
+        {
+            "name": "Tapinolepis",
+            "size": 20
+        },
+        {
+            "name": "Teratomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Zatania",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Amblyoponinae",
+    "children": [
+        {
+            "name": "Adetomyrma",
+            "size": 20
+        },
+        {
+            "name": "Amblyopone",
+            "size": 20
+        },
+        {
+            "name": "Apomyrma",
+            "size": 20
+        },
+        {
+            "name": "Bannapone",
+            "size": 20
+        },
+        {
+            "name": "Concoctio",
+            "size": 20
+        },
+        {
+            "name": "Condylodon",
+            "size": 20
+        },
+        {
+            "name": "Myopopone",
+            "size": 20
+        },
+        {
+            "name": "Mystrium",
+            "size": 20
+        },
+        {
+            "name": "Onychomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Opamyrma",
+            "size": 20
+        },
+        {
+            "name": "Prionopelta",
+            "size": 20
+        },
+        {
+            "name": "Stigmatomma",
+            "size": 20
+        },
+        {
+            "name": "Xymmer",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Aenictogitoninae",
+    "children": [
+        {
+            "name": "Aenictogiton",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Aenictinae",
+    "children": [
+        {
+            "name": "Aenictus",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Leptanilloidinae",
+    "children": [
+        {
+            "name": "Amyrmex",
+            "size": 20
+        },
+        {
+            "name": "Asphinctanilloides",
+            "size": 20
+        },
+        {
+            "name": "Leptanilloides",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Aneuretinae",
+    "children": [
+        {
+            "name": "Aneuretus",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Dolichoderinae",
+    "children": [
+        {
+            "name": "Anillidris",
+            "size": 20
+        },
+        {
+            "name": "Anonychomyrma",
+            "size": 20
+        },
+        {
+            "name": "Aptinoma",
+            "size": 20
+        },
+        {
+            "name": "Arnoldius",
+            "size": 20
+        },
+        {
+            "name": "Axinidris",
+            "size": 20
+        },
+        {
+            "name": "Azteca",
+            "size": 20
+        },
+        {
+            "name": "Bothriomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Chronoxenus",
+            "size": 20
+        },
+        {
+            "name": "Doleromyrma",
+            "size": 20
+        },
+        {
+            "name": "Dolichoderus",
+            "size": 20
+        },
+        {
+            "name": "Dorymyrmex",
+            "size": 20
+        },
+        {
+            "name": "Ecphorella",
+            "size": 20
+        },
+        {
+            "name": "Forelius",
+            "size": 20
+        },
+        {
+            "name": "Froggattella",
+            "size": 20
+        },
+        {
+            "name": "Gracilidris",
+            "size": 20
+        },
+        {
+            "name": "Iridomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Leptomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Linepithema",
+            "size": 20
+        },
+        {
+            "name": "Liometopum",
+            "size": 20
+        },
+        {
+            "name": "Loweriella",
+            "size": 20
+        },
+        {
+            "name": "Nebothriomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Ochetellus",
+            "size": 20
+        },
+        {
+            "name": "Papyrius",
+            "size": 20
+        },
+        {
+            "name": "Philidris",
+            "size": 20
+        },
+        {
+            "name": "Ravavy",
+            "size": 20
+        },
+        {
+            "name": "Tapinoma",
+            "size": 20
+        },
+        {
+            "name": "Technomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Turneria",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Ponerinae",
+    "children": [
+        {
+            "name": "Anochetus",
+            "size": 20
+        },
+        {
+            "name": "Asphinctopone",
+            "size": 20
+        },
+        {
+            "name": "Boloponera",
+            "size": 20
+        },
+        {
+            "name": "Centromyrmex",
+            "size": 20
+        },
+        {
+            "name": "Diacamma",
+            "size": 20
+        },
+        {
+            "name": "Diaphoromyrma",
+            "size": 20
+        },
+        {
+            "name": "Dinoponera",
+            "size": 20
+        },
+        {
+            "name": "Dolioponera",
+            "size": 20
+        },
+        {
+            "name": "Emeryopone",
+            "size": 20
+        },
+        {
+            "name": "Feroponera",
+            "size": 20
+        },
+        {
+            "name": "Harpegnathos",
+            "size": 20
+        },
+        {
+            "name": "Hypoponera",
+            "size": 20
+        },
+        {
+            "name": "Leptogenys",
+            "size": 20
+        },
+        {
+            "name": "Loboponera",
+            "size": 20
+        },
+        {
+            "name": "Myopias",
+            "size": 20
+        },
+        {
+            "name": "Odontomachus",
+            "size": 20
+        },
+        {
+            "name": "Odontoponera",
+            "size": 20
+        },
+        {
+            "name": "Pachycondyla",
+            "size": 20
+        },
+        {
+            "name": "Phrynoponera",
+            "size": 20
+        },
+        {
+            "name": "Platythyrea",
+            "size": 20
+        },
+        {
+            "name": "Plectroctena",
+            "size": 20
+        },
+        {
+            "name": "Ponera",
+            "size": 20
+        },
+        {
+            "name": "Promyopias",
+            "size": 20
+        },
+        {
+            "name": "Psalidomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Simopelta",
+            "size": 20
+        },
+        {
+            "name": "Streblognathus",
+            "size": 20
+        },
+        {
+            "name": "Thaumatomyrmex",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Leptanillinae",
+    "children": [
+        {
+            "name": "Anomalomyrma",
+            "size": 20
+        },
+        {
+            "name": "Furcotanilla",
+            "size": 20
+        },
+        {
+            "name": "Leptanilla",
+            "size": 20
+        },
+        {
+            "name": "Phaulomyrma",
+            "size": 20
+        },
+        {
+            "name": "Protanilla",
+            "size": 20
+        },
+        {
+            "name": "Yavnella",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Ecitoninae",
+    "children": [
+        {
+            "name": "Cheliomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Eciton",
+            "size": 20
+        },
+        {
+            "name": "Labidus",
+            "size": 20
+        },
+        {
+            "name": "Neivamyrmex",
+            "size": 20
+        },
+        {
+            "name": "Nomamyrmex",
+            "size": 20
+        },
+        {
+            "name": "Noonilla",
+            "size": 20
+        },
+        {
+            "name": "Nothomyrmecia",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Proceratiinae",
+    "children": [
+        {
+            "name": "Discothyrea",
+            "size": 20
+        },
+        {
+            "name": "Probolomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Proceratium",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Dorylinae",
+    "children": [
+        {
+            "name": "Dorylus",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Ectatomminae",
+    "children": [
+        {
+            "name": "Ectatomma",
+            "size": 20
+        },
+        {
+            "name": "Gnamptogenys",
+            "size": 20
+        },
+        {
+            "name": "Rhytidoponera",
+            "size": 20
+        },
+        {
+            "name": "Typhlomyrmex",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Martialinae",
+    "children": [
+        {
+            "name": "Martialis",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Pseudomyrmecinae",
+    "children": [
+        {
+            "name": "Myrcidris",
+            "size": 20
+        },
+        {
+            "name": "Pseudomyrmex",
+            "size": 20
+        },
+        {
+            "name": "Tetraponera",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Myrmeciinae",
+    "children": [
+        {
+            "name": "Myrmecia",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Paraponerinae",
+    "children": [
+        {
+            "name": "Paraponera",
+            "size": 20
+        },
+        {
+            "name": "Paraprionopelta",
+            "size": 20
+        }
+    ]
+},
+{
+    "name": "Agroecomyrmecinae",
+    "children": [
+        {
+            "name": "Tatuidris",
+            "size": 20
+        }
+    ]
+}
+]
+}
