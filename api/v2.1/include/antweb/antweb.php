@@ -31,7 +31,8 @@
         'fossil',
         'taxon_status',
         'date_collected_min',
-        'date_collected_max'
+        'date_collected_max',
+        'collectioncode'
       );
 
       //a list of valid ranks to query on
@@ -96,6 +97,11 @@
       if(isset($args['type'])) {
         $args['typeStatus'] = "%" . $args['type'] . "%";
         unset($args['type']);
+      }
+
+      if(isset($args['collectioncode'])) {
+        $args['fieldNumber'] = "%" . $args['collectioncode'] . "%";
+        unset($args['collectioncode']);
       }
 
       if(isset($args['species'])) {
@@ -238,6 +244,9 @@
         elseif($key == 'typeStatus') {
           $sql .= ' AND `typeStatus` LIKE :typeStatus';
         }
+        elseif($key == 'fieldNumber') {
+          $sql .= ' AND `fieldNumber` LIKE :fieldNumber';
+        }
         else {
           $sql .= sprintf(' AND `%s` = :%s',$key,$key);
         }
@@ -301,7 +310,8 @@
                      minimumElevationInMeters,
                      datecollected,
                      fossil,
-                     image_count
+                     image_count,
+                     fieldNumber
 
                      FROM darwin_core_3 WHERE 1";
 
@@ -375,6 +385,9 @@
         }
         elseif($key == 'typeStatus') {
           $sql .= ' AND `typeStatus` LIKE :typeStatus';
+        }
+        elseif($key == 'fieldNumber') {
+          $sql .= ' AND `fieldNumber` LIKE :fieldNumber';
         }
         else {
           $sql .= sprintf(' AND `%s` = :%s',$key,$key);
