@@ -2,11 +2,10 @@
 
 //this file is just meant for ad hoc processing of large data sets, eventually I'd like to turn it into OO classes once we figure out some typical use cases
 
-$specimen = file_get_contents('madagascar-rainforest-1970-2014.json');
+$specimen = file_get_contents('madagascar-1970-2014.json');
 
 $specimen = json_decode($specimen);
 
-/*
 $habitats = array(
 		'coastal scrub',
 		'coconut plantation',
@@ -25,7 +24,7 @@ $habitats = array(
 		'montane rainforest edge',
 		'montane shrubland',
 		'open secondary vegetation',
-		'park/garden',
+		//'park/garden',
 		'rainforest',
 		'rainforest edge',
 		'roadside',
@@ -36,7 +35,6 @@ $habitats = array(
 		'Uapaca woodland',
 		'secondary rainforest'
 	);
-*/
 
 $species = array();
 $i = 0;
@@ -49,6 +47,82 @@ foreach($specimen->specimens AS $s) {
 	$species[$i]['habitat'] = $s->habitat;
 	$i++;
 }
+
+$distincts = array();
+
+foreach($habitats AS $h) {
+
+	$distincts[$h] = array();
+
+	foreach($species AS $s) {
+		if(preg_match("/$h/i", $s['habitat'])) {
+			$habby = '';
+			if(preg_match("/rainforest/i", $s['habitat'])) {
+				if(preg_match("/montane rainforest edge/i", $s['habitat'])) {
+					$habby = '--montane-edge--';
+					if(!in_array($s['name'], $distincts[$h])) {
+						array_push($distincts[$h], $s['name']);
+					}
+				}
+				elseif(preg_match("/montane rainforest/i", $s['habitat'])) {
+					$habby .= '--montane--';
+					if(!in_array($s['name'], $distincts[$h])) {
+						array_push($distincts[$h], $s['name']);
+					}
+				}
+				elseif(preg_match("/rainforest edge/i", $s['habitat'])) {
+					$habby .= '--rainforest-edge--';
+					if(!in_array($s['name'], $distincts[$h])) {
+						array_push($distincts[$h], $s['name']);
+					}
+				}
+				elseif(preg_match("/secondary rainforest/i", $s['habitat'])) {
+					$habby .= '--secondary--';
+					if(!in_array($s['name'], $distincts[$h])) {
+						array_push($distincts[$h], $s['name']);
+					}
+				}
+				elseif(preg_match("/disturbed rainforest/i", $s['habitat'])) {
+					$habby .= '--disturbed--';
+					if(!in_array($s['name'], $distincts[$h])) {
+						array_push($distincts[$h], $s['name']);
+					}
+				}
+				elseif(preg_match("/littoral rainforest/i", $s['habitat'])) {
+					$habby .= '--littoral--';
+					if(!in_array($s['name'], $distincts[$h])) {
+						array_push($distincts[$h], $s['name']);
+					}
+				}
+				else { //just vanilla rainforest
+					$habby .= '--vanilla--';
+					if(!in_array($s['name'], $distincts[$h])) {
+						array_push($distincts[$h], $s['name']);
+					}
+				}
+			}
+			elseif(!in_array($s['name'], $distincts[$h])) {
+				array_push($distincts[$h], $s['name']);
+			}
+			//print '<p>' . $habby . '</p>';
+		}
+	}
+
+}
+
+$data = array();
+$i = 0;
+$total = 0;
+foreach($distincts AS $d => $val) {
+	$data[$i]['habitat'] = $d;
+	$data[$i]['count'] = count($val);
+	$i++;
+
+}
+
+$data = json_encode($data);
+
+print $data;
 
 /*
 for($i = 200; $i<=3000; $i + 200) {
@@ -71,7 +145,7 @@ for($i = 200; $i<=3000; $i + 200) {
 */
 
 //let's count distinct species per elevation 200m++ in rainforest habitat
-
+/*
 $elevations = array(
 		200 => array(),
 		400 => array(),
@@ -183,6 +257,7 @@ foreach($elevations AS $e => $val) {
 $data = json_encode($data);
 
 print '<pre>'; print_r($data); print '</pre>';
+*/
 
 /*
 $distincts = array();
