@@ -43,7 +43,7 @@
       );
 
       //list of valid characters
-      $this->valid_chars = array('-','_',',','.',':','(',')');
+      $this->valid_chars = array('-','_',',','.',':','(',')',' ');
 
     }
 
