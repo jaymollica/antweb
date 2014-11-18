@@ -24,7 +24,7 @@ $habitats = array(
 		'montane rainforest edge',
 		'montane shrubland',
 		'open secondary vegetation',
-		//'park/garden',
+		'park/garden',
 		'rainforest',
 		'rainforest edge',
 		'roadside',
@@ -49,7 +49,7 @@ foreach($specimen->specimens AS $s) {
 }
 
 
-/*
+
 //let's count distinct species per habitat
 $distincts = array();
 
@@ -117,17 +117,18 @@ $data = array();
 $i = 0;
 $total = 0;
 foreach($distincts AS $d => $val) {
-	$data[$i]['habitat'] = $d;
-	$data[$i]['count'] = count($val);
-	$i++;
+	if(count($val) > 0){
+		$data[$i]['habitat'] = $d;
+		$data[$i]['count'] = count($val);
+		$i++;
+	}
+	
 
 }
 
 $data = json_encode($data);
 
 print $data;
-
-*/
 
 /*
 for($i = 200; $i<=3000; $i + 200) {
@@ -264,7 +265,7 @@ $data = json_encode($data);
 print '<pre>'; print_r($data); print '</pre>';
 */
 
-
+/*
 $distincts = array();
 $collection_events = array();
 $by_year = array();
