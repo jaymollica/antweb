@@ -39,7 +39,7 @@ $habitats = array(
 $species = array();
 $i = 0;
 foreach($specimen->specimens AS $s) {
-	$species[$i]['year'] = date("Y",strtotime($s->datecollected));
+	$species[$i]['date'] = date("Y",strtotime($s->datecollected));
 	$species[$i]['name'] = $s->scientific_name;
 	$species[$i]['collectioncode'] = $s->fieldNumber;
 	$species[$i]['code'] = $s->catalogNumber;
@@ -48,6 +48,9 @@ foreach($specimen->specimens AS $s) {
 	$i++;
 }
 
+
+/*
+//let's count distinct species per habitat
 $distincts = array();
 
 foreach($habitats AS $h) {
@@ -123,6 +126,8 @@ foreach($distincts AS $d => $val) {
 $data = json_encode($data);
 
 print $data;
+
+*/
 
 /*
 for($i = 200; $i<=3000; $i + 200) {
@@ -259,14 +264,14 @@ $data = json_encode($data);
 print '<pre>'; print_r($data); print '</pre>';
 */
 
-/*
+
 $distincts = array();
 $collection_events = array();
 $by_year = array();
 $events = array();
 $specimens = array();
 
-for($i = 1970; $i <= 2010; $i++) {
+for($i = 1970; $i <= 2014; $i++) {
 	$by_year[$i] = array();
 	$events[$i] = array();
 	$specimens[$i] = array();
@@ -284,10 +289,7 @@ for($i = 1970; $i <= 2010; $i++) {
 		}
 	}
 }
-*/
 
-
-/*
 $data = array();
 $i = 0;
 $total = 0;
@@ -304,6 +306,8 @@ foreach($by_year AS $year => $val) {
 $data = json_encode($data);
 
 print $data;
+
+/*
 
 print "<div>&nbsp;</div>";
 
