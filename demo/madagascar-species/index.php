@@ -42,6 +42,7 @@ for($i = 1970; $i <= 2010; $i++) {
 }
 
 /*
+//get the new species added to antweb per year
 $data = array();
 $i = 0;
 $total = 0;
@@ -75,7 +76,7 @@ $data = json_encode($data);
 print $data;
 */
 
-//collection events
+//specimen collected per year
 $data = array();
 $i = 0;
 foreach($specimens AS $year => $val) {
