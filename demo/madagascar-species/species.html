@@ -29,7 +29,7 @@ p {
 
 </style>
 <body>
-<p>This chart illustrates the accumulation of new species from Madagascar added to antweb.org collected from 1970-2010.</p>
+<p>This chart illustrates the accumulation of new species from Madagascar added to antweb.org collected from 1970-2014.</p>
 <p>?country=madagascar&fossil=0&taxon_status=valid&date_collected_min=1970-01-01&date_collected_max=2009-12-31</p>
 <div id="chart">
 </div>
@@ -37,10 +37,10 @@ p {
 <div class="raw-data">
 <p>Raw Data</p>
 <p>
-<a href="data.json">Count of new species per year 1970-2010</a>
+<a href="species.json">Count of new species per year 1970-2014</a>
 </p>
 <p>
-<a href="specimen.json">All data used for this chart (warning 26.9 MB!)</a>
+<a href="madagascar-1970-2014.json">All data used for this chart (warning 34.6 MB!)</a>
 </p>
 </div>
 <script src="http://d3js.org/d3.v3.js"></script>
@@ -76,7 +76,7 @@ var svg = d3.select("#chart").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("data.json", function(error, data) {
+d3.json("species.json", function(error, data) {
   data.forEach(function(d) {
     d.year = d.year;
     d.total = d.total;

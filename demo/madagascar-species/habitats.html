@@ -1,0 +1,119 @@
+ <!DOCTYPE html>
+<meta charset="utf-8">
+ 
+<head>
+  <style>
+ 
+  p {
+    font: 16px sans-serif;
+  }
+
+  .axis {
+    font: 12px sans-serif;
+  }
+ 
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+ 
+  </style>
+</head>
+ 
+<body>
+
+<p>Number of distinct species found in each habitat in Madagascar</p>
+<p>?country=madagascar&fossil=0&taxon_status=valid&date_collected_min=1970-01-01&date_collected_max=2014-12-31</p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<div id="chart"></div>
+
+<div class="raw-data">
+<p>Raw Data</p>
+<p>
+<a href="habitats.json">Count of distinct species per habitat</a>
+</p>
+<p>
+<a href="madagascar-1970-2014.json">All data used for this chart (warning 34.6 MB!)</a>
+</p>
+</div>
+  
+<script src="http://d3js.org/d3.v3.min.js"></script>
+ 
+<script>
+ 
+var margin = {top: 20, right: 20, bottom: 250, left: 40},
+    width = 900 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+ 
+// Parse the date / time
+//var parseDate = d3.time.format("%Y-%m").parse;
+ 
+var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+ 
+var y = d3.scale.linear().range([height, 0]);
+ 
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+ 
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+ 
+var svg = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+ 
+d3.json("habitats.json", function(error, data) {
+ 
+    data.forEach(function(d) {
+        d.habitat = d.habitat;
+        d.count = +d.count;
+    });
+  
+  x.domain(data.map(function(d) { return d.habitat; }));
+  y.domain([0, d3.max(data, function(d) { return d.count; })]);
+ 
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+ 
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("# Distinct Species");
+ 
+  svg.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      .style("fill", "steelblue")
+      .attr("x", function(d) { return x(d.habitat); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.count); })
+      .attr("height", function(d) { return height - y(d.count); });
+ 
+});
+ 
+</script>
+ 
+</body>
