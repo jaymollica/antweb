@@ -62,7 +62,6 @@
 
       //validate args for allowed characters
       foreach($args AS &$arg) {
-        error_log($arg);
         if(!ctype_alnum(str_replace($this->valid_chars,'',$arg))) {
           $arg = 'invalid';
         }
