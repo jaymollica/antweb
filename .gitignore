@@ -82,5 +82,9 @@ publish
 api/include/header.php
 api/v1/include/header.php
 api/v2/include/header.php
+api/v2.1/include/header.php
+*header.php
 api/demo/map*
 demo/map*
+
+#edited by jay

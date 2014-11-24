@@ -1,8 +1,15 @@
 <?php
 
-$pdo = new PDO('mysql:dbname=ant','antweb','f0rm1c6');
+//require $_SERVER['DOCUMENT_ROOT'] . '/include/php/config.php';
 
-include($_SERVER['DOCUMENT_ROOT'] . '/api/v2.1/include/antweb/antweb.php');
+if(preg_match('/local/i', $_SERVER['HTTP_HOST'])) {
+  $pdo = new PDO('mysql:dbname=antweb','root','root');
+}
+else {
+  $pdo = new PDO('mysql:dbname=ant','antweb','f0rm1c6');
+}
+
+include($_SERVER['DOCUMENT_ROOT'] . '/api/v1/include/antweb/antweb.php');
 
 //session_start();
 
