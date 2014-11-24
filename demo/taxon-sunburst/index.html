@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+  <title>Taxonomy Sunburst</title>
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: auto;
+  position: relative;
+  width: 100%;
+  overflow-x:hidden;
+
+}
+
+a {
+  color:#1C86EE;
+}
+
+a:visited {
+  color:#AAAAAA;
+}
+
+#antbox {
+  top:20px;
+  font-size:2em;
+  width:45%;
+  float:left;
+  margin-top:20px;
+  margin-left:5%;
+}
+
+#description {
+  font-size:.5em;
+  width:100%;
+}
+
+#rollover {
+  font-size:.5em;
+  color:#AAAAAA;
+}
+
+#sunburst {
+  float:left;
+  width:40%;
+}
+
+#imgPanel {
+  float:left;
+  width:45%;
+  margin-left:30px;
+}
+
+.specimen_box {
+  width:100%;
+  float:left;
+  clear:both;
+  padding-bottom:20px;
+  border-bottom:1px solid lightgray;
+}
+
+p.taxonomy {
+  font-size: 1em;
+  color:#AAAAAA;
+}
+
+#loading {
+  margin-left:2%;
+  font-size:.5em;
+}
+
+#imgPanel img {
+  float:left;
+  margin-bottom:10px;
+  margin-right:10px;
+}
+
+path:hover{
+    opacity: 0.5;
+}
+
+</style>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="js/jquery-1.9.1.min.js"></script>
+<script>
+
+$(document).ready(function() {
+
+  function chooseAnt(ant) {
+    $('#rollover').html('Show me <i>' + ant + '</i>');
+  }
+
+  function emptyRollover() {
+    $('#rollover').text('Click a section to reveal any images.');
+  }
+
+  function clickAnt(ant,depth) {
+
+    $('#subname').text(ant);
+    if(ant == 'ant') {
+      $('#subname').text('');
+    }
+
+    var ant = {"ant":ant,"depth":depth};
+    var url = 'php/getwiki.php';
+
+    $.post(url,ant, function(data) {
+      $("#imgPanel").empty().append(data);
+    });
+
+  }
+
+  var width = 400,
+      height = 600,
+      radius = Math.min(width, height) / 2,
+      color = d3.scale.category20c();
+
+  var svg = d3.select("#sunburst").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(" + width / 2 + "," + height * .42 + ")");
+
+  var partition = d3.layout.partition()
+      .sort(null)
+      .size([2 * Math.PI, radius * radius])
+      .value(function(d) { return 1; });
+
+  var arc = d3.svg.arc()
+      .startAngle(function(d) { return d.x; })
+      .endAngle(function(d) { return d.x + d.dx; })
+      .innerRadius(function(d) { return Math.sqrt(d.y); })
+      .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+
+  d3.json("antsgenus.json", function(error, root) {
+
+    var path = svg.datum(root).selectAll("path")
+        .data(partition.nodes)
+        .enter().append("path")
+        .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
+        .attr("d", arc)
+        .on("mouseover",function(d) { chooseAnt(d.name); })
+        .on("click",function(d) { clickAnt(d.name,d.depth); })
+        .on("mouseout", function() {emptyRollover();})
+        .style("stroke", "#fff")
+        .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+        .style("fill-rule", "evenodd")
+        .each(stash);
+
+    d3.selectAll("input").on("change", function change() {
+      var value = this.value === "count"
+          ? function() { return 1; }
+          : function(d) { return d.size; };
+
+      path
+          .data(partition.value(value).nodes)
+          .transition()
+          .duration(1500)
+          .attrTween("d", arcTween);
+    });
+  });
+
+
+
+  // Stash the old values for transition.
+  function stash(d) {
+    d.x0 = d.x;
+    d.dx0 = d.dx;
+  }
+
+  // Interpolate the arcs in data space.
+  function arcTween(a) {
+    var i = d3.interpolate({x: a.x0, dx: a.dx0}, a);
+    return function(t) {
+      var b = i(t);
+      a.x0 = b.x;
+      a.dx0 = b.dx;
+      return arc(b);
+    };
+  }
+
+  d3.select(self.frameElement).style("height", height + "px");
+
+  $(document).ajaxStart(function(){
+    $('#loading').show();
+  }).ajaxStop(function(){
+    $('#loading').hide();
+  });
+
+  clickAnt('ant');
+
+});
+
+</script>
+
+</head>
+
+<body>
+
+<div id="antbox">Formicidae <span id="subname"></span>
+  <div id="description">
+  <p>
+  The inner ring represents <i>subfamilia</i> and the outer ring represents <i>genera</i>.
+  </p>
+  <p>
+  The taxonomy data is sourced from <a href="http://www.antcat.org">www.antcat.org</a> and the specimen are sourced from the <a href="http://www.antweb.org/api/v2">AntWeb API</a>.  The sunburst layout is borrowed from <a href="http://bl.ocks.org/mbostock/4063423">here</a>.
+  </p>
+  <p>
+  If you have any questions or comments email me <a href="mailto:info@vaguespace.org">here</a>.
+  </p>
+  </div>
+  <div><span id="rollover">Click a section to reveal any images.</span><span id="loading">Loading...</span></div>
+
+  <div id="sunburst"></div>
+</div>
+
+
+<div id="imgPanel"><div>
+
+</body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-41423516-1', 'vaguespace.org');
+  ga('send', 'pageview');
+
+</script>

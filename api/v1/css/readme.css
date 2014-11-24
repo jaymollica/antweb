@@ -1,0 +1,54 @@
+
+body,p,a,div,span {
+  font-size:1.2em;
+  font-family: Georgia, serif;
+  color:#443D33;
+}
+
+body {
+  background-image: url('../images/bg-head.png');
+  background-size:100%;
+  background-attachment:fixed;
+
+}
+
+.version {
+  font-family:'Helvetica', 'Arial', sans-serif;
+  font-size:.9em;
+  color:white;
+
+}
+
+a {
+  text-decoration:none;
+  color:white;
+}
+
+.link, .link a {
+  text-decoration:none;
+  color:white;
+  opacity:1;
+  background-color:#443D33;
+  padding:3px;
+}
+
+a:hover {
+  text-decoration:none;
+  color:lightgray;
+}
+
+h1 {
+  color:white;
+  font-family:'Helvetica', 'Arial', sans-serif;
+  margin-bottom:0;
+}
+
+h2,h3 {
+  margin-top:10%;
+}
+
+.container {
+  width:80%;
+  margin: 5% auto 5% auto;
+
+}
