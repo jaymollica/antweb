@@ -38,7 +38,7 @@
       );
 
       //list of valid characters
-      $this->valid_chars = array('-','_',',','.',':');
+      $this->valid_chars = array('-','_',',','.',':',' ');
 
     }
 
@@ -62,6 +62,7 @@
 
       //validate args for allowed characters
       foreach($args AS &$arg) {
+
         if(!ctype_alnum(str_replace($this->valid_chars,'',$arg))) {
           $arg = 'invalid';
         }
