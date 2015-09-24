@@ -419,7 +419,7 @@
 
           $url = 'http://antweb.org/api/v2/?occurrenceId=' . $s['occurrenceId'];
           $s = array('url' => $url) + $s;
-          unset($s['occurrenceId']);
+          //unset($s['occurrenceId']);
 
         }
 
